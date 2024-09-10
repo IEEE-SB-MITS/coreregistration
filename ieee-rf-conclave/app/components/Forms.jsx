@@ -9,15 +9,15 @@ const Forms = () => {
 
   const options = [
     {
-        label: "Register",
+        label: "REGISTER",
         value: "register",
-        selectedBackgroundColor: "black",
+        selectedBackgroundColor: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
         selectedFontColor: "#fff",
     },
     {
-        label: "Login",
+        label: "LOGIN",
         value: "login",
-        selectedBackgroundColor: "black",
+        selectedBackgroundColor: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
         selectedFontColor: "#fff",
     }
   ];
@@ -29,7 +29,7 @@ const Forms = () => {
   const initialSelectedIndex = options.findIndex(({value}) => value === "register");
 
   return (
-    <div className='w-1/2 bg-black flex flex-col justify-center items-center'>
+    <div className='w-1/2 bg-black flex flex-col justify-center items-center font-normal'>
     <div className='w-72 h-12 mb-8'>
         <SwitchSelector
             onChange={onChange}
@@ -46,4 +46,3 @@ const Forms = () => {
 }
 
 export default Forms
-
