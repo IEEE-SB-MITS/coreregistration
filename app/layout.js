@@ -1,6 +1,7 @@
 import localFont from "next/font/local";
 import "./globals.css";
-
+import Image from "next/image";
+import logo from '../public/logo.png'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

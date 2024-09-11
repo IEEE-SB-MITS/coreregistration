@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Login from './Login';
 import Register from './Register';
 import SwitchSelector from "react-switch-selector";
+import Image from "next/image";
+import logo from '../../public/logo.png'
 
 const Forms = () => {
   const [isLogin, setIsLogin] = useState(false)
@@ -29,8 +31,9 @@ const Forms = () => {
   const initialSelectedIndex = options.findIndex(({value}) => value === "register");
 
   return (
-    <div className='w-1/2 bg-black flex flex-col justify-center items-center font-normal'>
-    <div className='w-72 h-12 mb-8'>
+    <div className='w-full md:w-1/2 bg-black flex flex-col justify-center items-center font-normal pt-20 lg:pt-0'>
+      <div className='absolute top-5 right-5'><Image src={logo} width={80} height={80}/></div>
+    <div className='w-2/3 md:w-72 h-10 md:h-12 mb-8'>
         <SwitchSelector
             onChange={onChange}
             options={options}

@@ -2,15 +2,15 @@ import React from 'react'
 
 const Login = () => {
   return (
-    <div className='flex flex-col gap-7 items-center text-white w-full'>
-      <div className='flex flex-col gap-5 text-[#FFFFFFE5]'>
-        <div className='flex flex-col'>
+    <div className='flex flex-col gap-7 items-center text-white w-3/4'>
+      <div className='flex flex-col gap-5 text-[#FFFFFFE5] w-full lg:w-1/2 items-center'>
+        <div className='flex flex-col w-full'>
           <label className='text-sm pl-4 py-1'>Username</label>
-          <input type="text" className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-72" />
+          <input type="text" className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
         </div>
-        <div className='flex flex-col'>
+        <div className='flex flex-col w-full'>
           <label className='text-sm pl-4 py-1'>Password</label>
-          <input type="text" className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-72" />
+          <input type="text" className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
         </div>
       </div>
 
