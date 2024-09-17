@@ -1,6 +1,7 @@
 'use client'
-import React, { useState } from 'react'; 
-
+import React, { useState } from 'react';
+import { collection, addDoc } from 'firebase/firestore';
+import db from '../utils/firebase.config.js'; 
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -12,19 +13,46 @@ const Register = () => {
     isIeeeMember: true,
     ieeeId: '',
   });
+  
 
-  const handleChange = (e) =>{
-    const {name, value, type, checked} = e.target;
-    const fieldValue = value;
-    setFormData( (prevData) => ({
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const fieldValue = type === 'checkbox' ? checked : value;
+    setFormData((prevData) => ({
       ...prevData, [name]: fieldValue
-    }))
+    }));
+  };
+
+  async function addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId) {
+    try {
+      const docRef = await addDoc(collection(db, "CORE"), {
+        firstName,
+        lastName,
+        phoneNumber,
+        email,
+        collegeName,
+        branchSem,
+        isIeeeMember,
+        ieeeId,
+      });
+      console.log("Document written with ID: ", docRef.id);
+      return true;
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      return false;
+    }
   }
 
-  const handleSubmit =(e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-  }
+    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId } = formData;
+    const success = await addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId);
+    if (success) {
+    console.log('Data added successfully');
+    } else {
+     console.log('Error adding data',error);
+    }
+  };
 
   return (
     <div className='text-white flex flex-col gap-7 items-center relative w-3/4'>
@@ -32,7 +60,7 @@ const Register = () => {
         <div className='text-3xl font-semibold pb-2 text-[#FFFFFFD9]'>Student Details</div>
         <div className='flex flex-col gap-3 text-[#FFFFFFE5]'>
           <div className='flex flex-col lg:flex-row gap-3 lg:gap-10'>
-            <div className='flex flex-col lg:w-1/2'> 
+            <div className='flex flex-col lg:w-1/2'>
               <label className='text-sm pl-4 py-1'>First Name</label>
               <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
             </div>
@@ -70,16 +98,15 @@ const Register = () => {
           </div>
 
           <div className='flex flex-col lg:flex-row gap-3 lg:gap-10'>
-
             <div className='flex flex-col lg:w-1/2 pl-4'>
               <label className='text-base lg:text-lg  py-1'>Are you an IEEE member?</label>
               <div className='flex gap-16'>
                 <div className='flex gap-2 text-[#FFFFFFE5]'>
-                  <input type="radio" name="isIEEEMember" value={true}  onChange={handleChange} className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white" defaultChecked /><label>Yes</label>
+                  <input type="radio" name="isIeeeMember" value={true} onChange={handleChange} className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white" defaultChecked /><label>Yes</label>
                 </div>
                 <div className='flex gap-2'>
-                  <input type="radio" name="isIEEEMember" value={false}  onChange={handleChange} className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white" /><label>No</label>
-                </div> 
+                  <input type="radio" name="isIeeeMember" value={false} onChange={handleChange} className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white" /><label>No</label>
+                </div>
               </div>
             </div>
 
@@ -99,12 +126,11 @@ const Register = () => {
           }}
           onClick={handleSubmit}
         >
-          SIGN UP
+          REGISTER
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
