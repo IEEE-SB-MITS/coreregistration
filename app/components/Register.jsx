@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import db from '../utils/firebase.config.js'; 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +14,21 @@ const Register = () => {
     ieeeId: '',
   });
   
+  const generateTicketNumber = async () => {
+    let uniqueNumber;
+    let isUnique = false;
+
+    while (!isUnique) {
+      uniqueNumber = Math.floor(1000000000 + Math.random() * 9000000000);
+      const q = query(collection(db, "CORE"), where("randomNumber", "==", uniqueNumber));
+      const querySnapshot = await getDocs(q);
+      isUnique = querySnapshot.empty; 
+    }
+    console.log(uniqueNumber)
+    return uniqueNumber;
+  };
+
+  
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -23,7 +38,7 @@ const Register = () => {
     }));
   };
 
-  async function addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId) {
+  async function addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId, ticketNumber) {
     try {
       const docRef = await addDoc(collection(db, "CORE"), {
         firstName,
@@ -34,6 +49,7 @@ const Register = () => {
         branchSem,
         isIeeeMember,
         ieeeId,
+        ticketNumber
       });
       console.log("Document written with ID: ", docRef.id);
       return true;
@@ -45,8 +61,9 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId } = formData;
-    const success = await addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId);
+    const ticketNumber = await generateTicketNumber();
+    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId} = formData;
+    const success = await addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId, ticketNumber);
     if (success) {
     console.log('Data added successfully');
     } else {

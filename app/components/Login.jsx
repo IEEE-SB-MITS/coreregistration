@@ -22,7 +22,7 @@ const Login = ({loginfailed}) => {
         </div>
       </div>
 
-      <div className='flex flex-col items-center absolute bottom-10 text-[#FFFFFFE5]'>
+      <div className='hidden md:flex flex-col items-center absolute bottom-10 text-[#FFFFFFE5]'>
         <div>"Every great innovation has an origin. </div>
         <div>Can you find yours?" </div>
       </div>
