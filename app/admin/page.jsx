@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore, collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { app } from "../utils/firebase.config";
+import * as XLSX from 'xlsx';
 
 const AdminPanel = () => {
     const [participants, setParticipants] = useState([]);
@@ -46,51 +47,68 @@ const AdminPanel = () => {
         window.location.href = "/login";
     };
 
+    // Export to Excel
+    const handleExport = () => {
+        const worksheet = XLSX.utils.json_to_sheet(participants);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
+        XLSX.writeFile(workbook, "participants.xlsx");
+    };
+
     if (!user) {
         return <p>Loading...</p>;
     }
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold">Admin Panel</h1>
-            <button onClick={handleLogout} className="mt-2 bg-red-500 text-white py-1 px-3 rounded">Log Out</button>
-            <table className="table-auto w-full mt-4">
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Email</th>
-                        <th>College Name</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {participants.map(participant => (
-                        <tr key={participant.id}>
-                            <td>{participant.firstName}</td>
-                            <td>{participant.lastName}</td>
-                            <td>{participant.email}</td>
-                            <td>{participant.collegeName}</td>
-                            <td>{participant.status}</td>
-                            <td>
-                                <button
-                                    className="bg-green-500 text-white py-1 px-2 rounded mr-2"
-                                    onClick={() => handleStatusChange(participant.id, "confirmed")}
-                                >
-                                    Confirm
-                                </button>
-                                <button
-                                    className="bg-red-500 text-white py-1 px-2 rounded"
-                                    onClick={() => handleStatusChange(participant.id, "rejected")}
-                                >
-                                    Reject
-                                </button>
-                            </td>
+            <h1 className="text-2xl font-bold mb-4">Admin Panel</h1>
+            <button onClick={handleLogout} className="mb-4 bg-red-500 text-white py-1 px-3 rounded">Log Out</button>
+            <button onClick={handleExport} className="mb-4 bg-blue-500 text-white py-1 px-3 rounded ml-2">Export to Excel</button>
+            <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.No</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">College Name</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {participants.map((participant, index) => (
+                            <tr key={participant.id}>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{participant.firstName} {participant.lastName}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{participant.phoneNumber}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{participant.collegeName}</td>
+                                <td className={`px-6 py-4 whitespace-nowrap text-sm ${participant.status === "pending" ? "bg-yellow-500 text-white" : participant.status === "confirmed" ? "bg-green-500 text-white" : "bg-black text-white"}`}>{participant.status}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button
+                                        className="bg-green-500 text-white py-1 px-2 rounded mr-2 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onClick={() => handleStatusChange(participant.id, "confirmed")}
+                                    >
+                                        Confirm
+                                    </button>
+                                    <button
+                                        className="bg-red-500 text-white py-1 px-2 rounded mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                        onClick={() => handleStatusChange(participant.id, "rejected")}
+                                    >
+                                        Reject
+                                    </button>
+                                    <button
+                                        className="bg-yellow-500 text-white py-1 px-2 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                                        onClick={() => handleStatusChange(participant.id, "pending")}
+                                    >
+                                        Pending
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 };
