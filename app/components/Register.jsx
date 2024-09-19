@@ -110,7 +110,7 @@ const Register = () => {
   
            console.log("Document written with ID: ", docRef.id);
       
-      window.location.href = `/ticket?ticketNumber=${ticketNumber}`;
+      window.location.href = `/ticket?ticketNumber=${currentTicket}`;
       
       return true;
     } catch (error) {
