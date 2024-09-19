@@ -5,6 +5,7 @@ import Register from './Register';
 import SwitchSelector from "react-switch-selector";
 import Image from "next/image";
 import logo from '../../public/logo.png'
+import mcr from '../../public/mobile-cr.png'
 
 const Forms = () => {
   const [isLogin, setIsLogin] = useState(false)
@@ -35,7 +36,7 @@ const Forms = () => {
   }
 
   return (
-    <div className='w-full  md:w-1/2 bg-black flex flex-col items-center font-normal pt-5 '>
+    <div className='w-full  md:w-1/2 bg-black bg-opacity-90 flex flex-col justify-between md:justify-normal items-center font-normal pt-5 '>
       <div className=' w-full flex justify-end pb-10 pr-5'><Image src={logo} width={80} height={80} /></div>
 
 
@@ -50,6 +51,8 @@ const Forms = () => {
         </div>
 
         {isLogin ? <Login loginfailed /> : <Register />}
+
+        <div className='md:hidden m-6 '><Image src={mcr} width={211} height={95} alt='copyright'/></div>
       
     </div>
   )
