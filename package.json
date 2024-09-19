@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@h0rn0chse/night-sky": "^2.0.0",
     "firebase": "^10.13.1",
     "next": "^14.2.12",
     "react": "^18",

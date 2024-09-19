@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import db from '../utils/firebase.config.js';
 import Image from "next/image";
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,12 +15,13 @@ const Register = () => {
     branchSem: '',
     isIeeeMember: true,
     ieeeId: '',
-    transcationid: '',
+    transactionId: '',
   });
 
   const [showDetails, setShowDetails] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMember, setIsMember]  = useState(true);
+  const [file, setFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -42,7 +44,20 @@ const Register = () => {
     }
   };
 
-  async function addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId,transcationid) {
+  const renameFile = (file, newName) => {
+    const renamedFile = new File([file], `${newName}${file.name.substring(file.name.lastIndexOf('.'))}`, { type: file.type });
+    console.log('Renamed file:', renamedFile);
+    const storage = getStorage();
+    const storageRef = ref(storage, `upiscreenshots/${renamedFile.name}`);
+
+    uploadBytes(storageRef, renamedFile).then((snapshot) => {
+      console.log('Uploaded a blob or file!', snapshot);
+    }).catch((error) => {
+      console.error('Error uploading file:', error);
+    });
+  };
+
+  async function addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, ieeeId, transactionId) {
     try {
       const docRef = await addDoc(collection(db, "CORE"), {
         firstName,
@@ -51,9 +66,8 @@ const Register = () => {
         email,
         collegeName,
         branchSem,
-        isIeeeMember,
         ieeeId,
-        transcationid,
+        transactionId,
       });
       console.log("Document written with ID: ", docRef.id);
       return true;
@@ -65,7 +79,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId, transcationid } = formData;
+    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, ieeeId } = formData;
 
     if (!firstName || !lastName || !phoneNumber || !email || !collegeName || !branchSem || (isMember && !ieeeId)) {
       console.log('fill in all the fields');
@@ -91,12 +105,19 @@ const Register = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
   const handleSubmit1 = async (e) => {
     e.preventDefault();
-    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId, transcationid } = formData;
-    const success = await addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, isIeeeMember, ieeeId, transcationid);
+    const { firstName, lastName, phoneNumber, email, collegeName, branchSem, ieeeId, transactionId } = formData;
+    const success = await addData(firstName, lastName, phoneNumber, email, collegeName, branchSem, ieeeId, transactionId);
     if (success) {
-    console.log('Data added successfully');
+      if (file) {
+        renameFile(file, transactionId);
+      }
+      setIsSubmitted(true);
     } else {
       console.log('Error adding data');
     }
@@ -118,24 +139,24 @@ const Register = () => {
               <Image src="" width="80" height="90" />
             </div>
             <div className='flex flex-col justify-center  '>
-
-            <label className='text-sm pl-4 py-1'>Transcation Id</label>
-            <input type="text" name="transcationid" value={formData.transcationid} onChange={handleChange} className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
-            
-            
+              <label className='text-sm pl-4 py-1'>Transaction Id</label>
+              <input type="text" name="transactionId" value={formData.transactionId} onChange={handleChange} className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
             </div>
             <div className='flex flex-col justify-center  items-center '>
-
-            <button
-              className="btn btn-sm h-9 w-44 flex rounded-full text-white border border-[#505459]"
-              style={{
-                background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
-              }}
-              onClick={handleSubmit1}
-            >
-              Sign Up
-            </button>
-           </div>
+              <label className='text-sm pl-4 py-1'>Upload File</label>
+              <input type="file" onChange={handleFileChange} className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" />
+            </div>
+            <div className='flex flex-col justify-center  items-center '>
+              <button
+                className="btn btn-sm h-9 w-44 flex rounded-full text-white border border-[#505459]"
+                style={{
+                  background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
+                }}
+                onClick={handleSubmit1}
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
         </div>
       ) : (
