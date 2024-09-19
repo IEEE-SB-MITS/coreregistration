@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation'; // For redirection
+import { useRouter } from 'next/navigation'; 
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import db from '../utils/firebase.config'; // Adjust the import according to your project structure
+import db from '../utils/firebase.config';
 
 const Login = () => {
   const [ticketNumber, setTicketNumber] = useState('');
@@ -20,7 +20,7 @@ const Login = () => {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        router.push(`/ticket?ticketNumber=${ticketNumber}`); // Passing only the ticket number as query param
+        router.push(`/ticket?ticketNumber=${ticketNumber}`); 
       } else {
         setError("Ticket not found. Please check your ticket number.");
       }

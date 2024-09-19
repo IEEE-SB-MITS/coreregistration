@@ -13,7 +13,6 @@ const Tickets = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // Access URL parameters directly
       const urlParams = new URLSearchParams(window.location.search);
       const ticketNumber = urlParams.get("ticketNumber");
 
@@ -39,12 +38,12 @@ const Tickets = () => {
           setLoading(false);
         }
       } else {
-        setLoading(false); // Stop loading if ticketNumber is not present
+        setLoading(false); 
       }
     };
 
     fetchUserData();
-  }, []); // Empty dependency array ensures this runs once on component mount
+  }, []); 
 
   if (loading) {
     return <div>Loading...</div>;
@@ -56,7 +55,7 @@ const Tickets = () => {
   const handleDownload = () => {
     if (downloadref.current) {
       html2canvas(downloadref.current, {
-        backgroundColor: "#000000", // Set the background color to black
+        backgroundColor: "#000000", 
         ignoreElements: (element) => {
           const style = window.getComputedStyle(element);
           return style.backgroundImage !== "none";
@@ -67,10 +66,10 @@ const Tickets = () => {
             const el = elements[i];
             const style = window.getComputedStyle(el);
             if (style.color.startsWith("oklch(")) {
-              el.style.color = "#FFFFFF"; // Fallback to white for text
+              el.style.color = "#FFFFFF"; 
             }
             if (style.backgroundColor.startsWith("oklch(")) {
-              el.style.backgroundColor = "#000000"; // Fallback to black for background
+              el.style.backgroundColor = "#000000"; 
             }
           }
         },
@@ -78,7 +77,7 @@ const Tickets = () => {
         const image = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = image;
-        link.download = "component.png";
+        link.download = "ticket.png";
         link.click();
       });
     }
