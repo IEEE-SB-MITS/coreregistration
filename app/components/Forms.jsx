@@ -4,11 +4,11 @@ import Login from './Login';
 import Register from './Register';
 import SwitchSelector from "react-switch-selector";
 import Image from "next/image";
-import logo from '../../public/logo.png'
-import mcr from '../../public/mobile-cr.png'
+import logo from '../../public/logo.png';
+import mcr from '../../public/mobile-cr.png';
 
 const Forms = () => {
-  const [isLogin, setIsLogin] = useState(false)
+  const [isLogin, setIsLogin] = useState(false);
 
   const options = [
     {
@@ -26,41 +26,47 @@ const Forms = () => {
   ];
 
   const onChange = () => {
-    setIsLogin(!isLogin)
+    setIsLogin(!isLogin);
   };
 
   const initialSelectedIndex = options.findIndex(({ value }) => value === "register");
- 
+
   const loginfailed = () => {
-    setIsLogin(false)
-  }
+    setIsLogin(false);
+  };
 
   return (
-    <div className='w-full  md:w-1/2 bg-black flex flex-col justify-between md:justify-normal items-center font-normal pt-5 '>
-      <div className=' w-full flex justify-end pb-10 pr-5'><Image src={logo} width={80} height={80} /></div>
+    <div className='w-full md:pb-20 md:w-1/2 bg-black flex flex-col justify-between items-center font-normal pt-24 relative'>
+      {/* Logo */}
+      <div className='w-full absolute top-6 right-0 flex justify-end pb-10 pr-5'>
+        <Image src={logo} width={80} height={80} />
+      </div>
 
+      {/* SwitchSelector */}
+      <div className='w-2/3 md:w-72 h-10 md:h-12 mb-8'>
+        <SwitchSelector
+          onChange={onChange}
+          options={options}
+          initialSelectedIndex={initialSelectedIndex}
+          backgroundColor={"#fff"}
+          fontColor={"#000"}
+        />
+      </div>
 
-        <div className='w-2/3 md:w-72 h-10 md:h-12 mb-8'>
-          <SwitchSelector
-            onChange={onChange}
-            options={options}
-            initialSelectedIndex={initialSelectedIndex}
-            backgroundColor={"#fff"}
-            fontColor={"#000"}
-          />
+      {/* Form container */}
+      <div className="flex flex-col justify-center flex-grow items-center w-full">
+        {/* Login or Register */}
+        <div className="w-full flex justify-center items-center">
+          {isLogin ? <Login loginfailed /> : <Register />}
         </div>
+      </div>
 
-        {isLogin ? <Login loginfailed /> : <Register />}
-
-        <div className='md:hidden m-6 '><Image src={mcr} width={211} height={95} alt='copyright'/></div>
-      
+      {/* Mobile copyright image */}
+      <div className='md:hidden m-6'>
+        <Image src={mcr} width={211} height={95} alt='copyright' />
+      </div>
     </div>
-  )
+  );
+};
 
-
-}
-
-
-
-export default Forms
-
+export default Forms;
