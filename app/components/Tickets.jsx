@@ -94,11 +94,12 @@ const Tickets = () => {
 
   return (
     <div
-      className="flex flex-col gap-4 md:gap-4 justify-center  items-center text-white w-full "
+      className="flex flex-col gap-4 justify-center h-full  items-center text-white w-full "
       ref={downloadref}
     >
-      <div className="text-xl md:text-3xl py-1 border-gray-500 text-[#D9D9D9] border-b-[0.5px]">
+      <div className="text-xl md:text-3xl flex flex-col justify-center items-center py-1 border-gray-500 text-[#D9D9D9] border-b-[0.5px]">
         TICKET DETAILS
+        <p className="text-sm py-2">&#40;ticket number: {userData.ticketNumber}&#41;</p>
       </div>
 
       <div className="bg-white w-5/6 lg:w-2/3 text-black">
