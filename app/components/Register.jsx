@@ -108,7 +108,10 @@ const Register = () => {
         ticketNumber: currentTicket,
       });
   
-      console.log("Document written with ID: ", docRef.id);
+           console.log("Document written with ID: ", docRef.id);
+      
+      window.location.href = `/ticket?ticketNumber=${ticketNumber}`;
+      
       return true;
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -211,7 +214,6 @@ const Register = () => {
         renameFile(file, transactionId);
       }
       setIsSubmitted(true);
-      router.push(`/ticket?ticketNumber=${ticketNumber}`)
     } else {
       setError("Error adding data");
     }
