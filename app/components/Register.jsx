@@ -247,7 +247,7 @@ const Register = () => {
 
  
   return (
-    <div className="text-white flex flex-col gap-7 items-center w-full max-w-screen-lg mx-auto p-4 mdpt-20 overflow-auto">
+    <div className="text-white  flex flex-col gap-7 items-center w-full max-w-screen mx-auto mdpt-20 overflow-auto">
       {error && (
         <div className="fixed top-16 md:top-44 right-5 p-2 w-80 md:w-1/4 z-50">
           <div className="relative bg-gradient-to-r from-[#4a1000] to-red-600 text-white p-3 rounded-lg shadow-lg">
@@ -331,8 +331,8 @@ const Register = () => {
         </div>
       ) : (
         <>
-          <div className="w-full">
-            <div className="text-3xl font-semibold pb-2 text-[#FFFFFFD9]">
+          <div className="w-3/4">
+            <div className="text-3xl font-semibold   text-[#FFFFFFD9]">
               Student Details
             </div>
             <div className="flex flex-col gap-3 text-[#FFFFFFE5]">
@@ -405,8 +405,8 @@ const Register = () => {
             </div>
           </div>
 
-          <div className="w-full">
-            <div className="text-3xl font-semibold pb-2 text-[#FFFFFFD9]">
+          <div className="w-3/4">
+            <div className="text-3xl font-semibold text-[#FFFFFFD9]">
               College Details
             </div>
             <div className="flex flex-col gap-3 text-[#FFFFFFE5]">
