@@ -339,7 +339,7 @@ const Register = () => {
               <div className="flex flex-col lg:flex-row gap-3 lg:gap-10">
                 <div className="flex flex-col lg:w-1/2">
                   <label className="block">
-                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700  block text-sm pl-4 py-1">
                       First Name
                     </span>
                     <input
@@ -347,7 +347,7 @@ const Register = () => {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className={`input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full required`}
+                      className={`input h-10 input-bordered border-2 p-3 border-white bg-[#57595d] rounded-full w-full required`}
                     />
                   </label>
                 </div>
