@@ -9,7 +9,7 @@ export default function Home() {
       <div className='hidden md:block w-1/2'>
         <Hero />
     <ShootingStars /> 
-    <StarsBackground  starDensity ="0.0002"/> 
+    <StarsBackground  starDensity ="0.0005"/> 
       </div>
       <Forms />
     </div>
