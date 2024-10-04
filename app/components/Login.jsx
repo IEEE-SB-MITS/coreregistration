@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'; 
+import Image from 'next/image'; 
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import db from '../utils/firebase.config';
+import ticket from '../../public/ticket.png';
 
 const Login = () => {
   const [ticketNumber, setTicketNumber] = useState('');
@@ -32,6 +34,9 @@ const Login = () => {
 
   return (
     <div className='flex flex-col gap-7 items-center text-white w-3/4'>
+        <div className='flex flex-col w-full items-center justify-center'>
+        <Image src={ticket} width={180} height={180} />
+      </div>
       <div className='flex flex-col gap-5 text-[#FFFFFFE5] w-full lg:w-1/2 items-center'>
         <div className='flex flex-col w-full'>
           <label className='text-sm pl-4 py-1'>Ticket Number</label>
