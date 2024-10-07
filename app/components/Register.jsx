@@ -1,10 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, query, where, getDoc,getDocs,doc,updateDoc } from "firebase/firestore";
+import { collection, addDoc, query, where, getDoc, getDocs, doc, updateDoc } from "firebase/firestore";
 import db from "../utils/firebase.config.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import qr from '../../public/qr.jpg';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const Register = () => {
     collegeName: "",
     branchSem: "",
     isIeeeMember: true,
+    isRasMember: true,
     ieeeId: "",
     transactionId: "",
     status: "pending",
@@ -23,6 +25,7 @@ const Register = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMember, setIsMember] = useState(true);
+  const [isRasMember, setIsRasMember] = useState(true);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,6 +50,9 @@ const Register = () => {
 
     if (name === "isIeeeMember") {
       setIsMember(value === "true");
+    }
+    if (name === "isRasMember") {
+      setIsRasMember(value === "true");
     }
   };
 
@@ -94,7 +100,7 @@ const Register = () => {
       const nextTicket = currentTicket + 1;
       setTicketNumber(currentTicket);
       await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
-  
+
       const docRef = await addDoc(collection(db, "CORE"), {
         firstName,
         lastName,
@@ -103,15 +109,17 @@ const Register = () => {
         collegeName,
         branchSem,
         ieeeId,
+        isRas,
+        coupon,
         transactionId,
         status: "pending",
         ticketNumber: currentTicket,
       });
-  
-           console.log("Document written with ID: ", docRef.id);
-      
+
+      console.log("Document written with ID: ", docRef.id);
+
       window.location.href = `/ticket?ticketNumber=${currentTicket}`;
-      
+
       return true;
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -128,6 +136,8 @@ const Register = () => {
       collegeName,
       branchSem,
       ieeeId,
+      isRas,
+      coupon,
     } = formData;
 
     if (
@@ -137,6 +147,8 @@ const Register = () => {
       !email ||
       !collegeName ||
       !branchSem ||
+      !isRas ||
+      !coupon ||
       (isMember && !ieeeId)
     ) {
       setError("Please fill in all the required fields.");
@@ -176,6 +188,8 @@ const Register = () => {
       collegeName,
       branchSem,
       ieeeId,
+      isRas,
+      coupon,
       transactionId,
     } = formData;
 
@@ -205,7 +219,9 @@ const Register = () => {
       email,
       collegeName,
       branchSem,
-      ieeeId,
+      ieeeId, 
+      isRas,
+      coupon,
       transactionId
     );
 
@@ -233,7 +249,7 @@ const Register = () => {
   useEffect(() => {
     let timerId;
     if (error) {
-      setTimer(5); 
+      setTimer(5);
       timerId = setInterval(() => {
         setTimer((prev) => prev - 1);
       }, 1000);
@@ -247,9 +263,9 @@ const Register = () => {
     }
   }, [timer]);
 
- 
+
   return (
-    <div className="text-white  flex flex-col gap-7 items-center w-full max-w-screen mx-auto mdpt-20 overflow-auto">
+    <div className="text-white h-full  flex flex-col gap-7 items-center w-full max-w-screen mx-auto mdpt-20 overflow-auto">
       {error && (
         <div className="fixed top-16 md:top-44 right-5 p-2 w-80 md:w-1/4 z-50">
           <div className="relative bg-gradient-to-r from-[#4a1000] to-red-600 text-white p-3 rounded-lg shadow-lg">
@@ -298,7 +314,7 @@ const Register = () => {
           </div>
           <div className="flex flex-col justify-center gap-3 text-[#FFFFFFE5]">
             <div className="flex flex-col justify-center items-center ">
-              <Image src="" width="80" height="90" />
+              <Image src={qr} width="180" height="190" />
             </div>
             <div className="flex flex-col justify-center  ">
               <label className="text-sm pl-4 py-1">Transaction Id</label>
@@ -455,7 +471,7 @@ const Register = () => {
                       <input
                         type="radio"
                         name="isIeeeMember"
-                        value={true}
+                        value={formData.isRas}
                         onChange={handleChange}
                         className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
                         defaultChecked
@@ -490,17 +506,58 @@ const Register = () => {
                   </label>
                 </div>
               </div>
+              <div className="flex flex-col lg:flex-row gap-3 lg:gap-10">
+                <div className="flex flex-col lg:w-1/2 pl-4 pb-2">
+                  <label className="">
+                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-base lg:text-lg  py-1">
+                      Are you an Ras member?
+                    </span>
+                  </label>
+                  <div className="flex gap-16">
+                    <div className="flex gap-2">
+                      <input
+                        type="radio"
+                        name="isRasMember"
+                        value={true}
+                        onChange={handleChange}
+                        className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
+                        defaultChecked
+                      />
+                      <label>Yes</label>
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="radio"
+                        name="isRasMember"
+                        value={false}
+                        onChange={handleChange}
+                        className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
+                      />
+                      <label>No</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col lg:w-1/2">
+                  <label>
+                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+                    Referal Code
+                    </span>
+                    <input type="text"  name="coupon"  value={formData.coupon} onChange={handleChange}
+                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                    />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-
           <div>
             <button
               className="btn btn-sm h-9 w-44 rounded-full text-white border border-[#505459]"
               style={{
                 background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
               }}
-              onClick={handleSubmit}
-            >
+              onClick={handleSubmit}  >
               Continue
             </button>
           </div>
