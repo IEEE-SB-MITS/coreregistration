@@ -193,7 +193,7 @@ const Register = () => {
 
     const emailExists = await checkDuplicateEmail(email);
     if (emailExists) {
-      setError("ready registered.");
+      setError("already registered.");
       setLoading(false);
       return;
     }
@@ -212,10 +212,12 @@ const Register = () => {
     if (success) {
       if (file) {
         renameFile(file, transactionId);
+        console.log("cca");
       }
       setIsSubmitted(true);
     } else {
       setError("Error adding data");
+      console.log(error);
     }
     setLoading(false);
   };
