@@ -5,7 +5,7 @@ import db from "../utils/firebase.config.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-
+import qr from "../../public/qr.jpg";
 const Register = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -296,7 +296,7 @@ const Register = () => {
           </div>
           <div className="flex flex-col justify-center gap-3 text-[#FFFFFFE5]">
             <div className="flex flex-col justify-center items-center ">
-              <Image src="" width="80" height="90" />
+              <Image src={qr} width="130" height="130" />
             </div>
             <div className="flex flex-col justify-center  ">
               <label className="text-sm pl-4 py-1">Transaction Id</label>
