@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { collection, addDoc, query, where, getDoc, getDocs, doc, updateDoc } from "firebase/firestore";
+import React, { useState } from "react";
+import { collection, addDoc, getDoc, doc, updateDoc } from "firebase/firestore";
 import db from "../utils/firebase.config.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -12,15 +12,11 @@ const Register = () => {
     transactionId: "",
   });
 
-  const [showDetails, setShowDetails] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isMember, setIsMember] = useState(true);
-  const [isRasMember, setIsRasMember] = useState(true);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [ticketNumber, setTicketNumber] = useState(0);
-  const [timer, setTimer] = useState(0);
 
   const router = useRouter();
 
@@ -35,20 +31,11 @@ const Register = () => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
-  const renameFile = (file, transactionId) => {
-    const newName = `${transactionId}${file.name.substring(file.name.lastIndexOf("."))}`;
-    const renamedFile = new File(
-      [file],
-      newName,
-      { type: file.type }
-    );
-
-    console.log("Renamed file name:", renamedFile.name);
-
+  const uploadFile = (file) => {
     const storage = getStorage();
-    const storageRef = ref(storage, `upiscreenshots/${renamedFile.name}`);
+    const storageRef = ref(storage, `upiscreenshots/${file.name}`);
 
-    uploadBytes(storageRef, renamedFile)
+    uploadBytes(storageRef, file)
       .then((snapshot) => console.log("Uploaded a blob or file!", snapshot))
       .catch((error) => console.error("Error uploading file:", error));
   };
@@ -82,13 +69,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { firstName, lastName } = formData;
-
+    setLoading(true);
     const success = await addData(formData);
 
     if (success) {
       if (file) {
-        renameFile(file, formData.transactionId);
+        uploadFile(file);
       }
       setIsSubmitted(true);
     } else {
