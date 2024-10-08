@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import db from '../../utils/config';
-import { doc, setDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { v4 as uuidv4 } from 'uuid';
-import { toast } from 'react-toastify'; // For alerts, if you have react-toastify
-import { getStorage } from 'firebase/storage';
+import React, { useState } from "react";
+import db from "../../utils/config";
+import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify"; // For alerts, if you have react-toastify
+import { getStorage } from "firebase/storage";
 
 const Register = () => {
   const storage = getStorage();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    veg: 'Veg',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    veg: "Veg",
     ieeeMember: false,
-    ieeeMembershipId: '',
+    ieeeMembershipId: "",
     rasMember: false,
-    college: '',
-    branch: '',
-    semester: '',
-    transactionId: '',
+    college: "",
+    branch: "",
+    semester: "",
+    transactionId: "",
     paymentScreenshot: null,
+    referralCode: "", // Added referral code field
   });
 
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ const Register = () => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -43,7 +44,15 @@ const Register = () => {
 
   const handleSubmitPartOne = (e) => {
     e.preventDefault();
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phoneNumber || !formData.college || !formData.branch || !formData.semester) {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.phoneNumber ||
+      !formData.college ||
+      !formData.branch ||
+      !formData.semester
+    ) {
       return toast.error("Please fill in all required fields!");
     }
 
@@ -61,30 +70,36 @@ const Register = () => {
     try {
       if (!formData.transactionId || !formData.paymentScreenshot) {
         setLoading(false);
-        return toast.error('Please provide transaction ID and upload payment screenshot');
+        return toast.error(
+          "Please provide transaction ID and upload payment screenshot"
+        );
       }
 
       const paymentScreenshotId = `${formData.transactionId}-${uuidv4()}`;
       const screenshotRef = ref(storage, `screenshots/${paymentScreenshotId}`);
 
-      const uploadTask = uploadBytesResumable(screenshotRef, formData.paymentScreenshot);
+      const uploadTask = uploadBytesResumable(
+        screenshotRef,
+        formData.paymentScreenshot
+      );
       uploadTask.on(
-        'state_changed',
+        "state_changed",
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
         },
         (error) => {
           console.error(error);
           setLoading(false);
-          toast.error('File upload failed');
+          toast.error("File upload failed");
         },
         async () => {
           const screenshotUrl = await getDownloadURL(uploadTask.snapshot.ref);
 
           // Save data to Firestore
           const userId = uuidv4(); // Generate unique ID for Firestore
-          await setDoc(doc(db, 'users', userId), {
+          await setDoc(doc(db, "users", userId), {
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
@@ -97,77 +112,194 @@ const Register = () => {
             branch: formData.branch,
             semester: formData.semester,
             transactionId: formData.transactionId,
+            referralCode: formData.referralCode, // Include referral code
             paymentScreenshotUrl: screenshotUrl,
           });
 
           setLoading(false);
-          toast.success('Registration successful');
+          toast.success("Registration successful");
           setFormData({
-            firstName: '',
-            lastName: '',
-            email: '',
-            phoneNumber: '',
-            veg: 'Veg',
+            firstName: "",
+            lastName: "",
+            email: "",
+            phoneNumber: "",
+            veg: "Veg",
             ieeeMember: false,
-            ieeeMembershipId: '',
+            ieeeMembershipId: "",
             rasMember: false,
-            college: '',
-            branch: '',
-            semester: '',
-            transactionId: '',
+            college: "",
+            branch: "",
+            semester: "",
+            transactionId: "",
             paymentScreenshot: null,
+            referralCode: "",
           });
         }
       );
     } catch (error) {
-      console.error('Error saving document:', error);
+      console.error("Error saving document:", error);
       setLoading(false);
-      toast.error('Registration failed');
+      toast.error("Registration failed");
     }
   };
 
   return (
-    <div className="register-form mx-auto p-4">
+    <div className="register-form h-full  p-4 pt-0">
       {!partTwo ? (
-        <form onSubmit={handleSubmitPartOne} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <h2 className="col-span-2 text-xl font-bold mb-4">Register (Part 1)</h2>
-
-          <input type="text" name="firstName" placeholder="First Name" onChange={handleChange} value={formData.firstName} required className="input-field" />
-          <input type="text" name="lastName" placeholder="Last Name" onChange={handleChange} value={formData.lastName} required className="input-field" />
-          <input type="email" name="email" placeholder="Email" onChange={handleChange} value={formData.email} required className="input-field" />
-          <input type="text" name="phoneNumber" placeholder="Phone Number" onChange={handleChange} value={formData.phoneNumber} required className="input-field" />
+        <form
+          onSubmit={handleSubmitPartOne}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            onChange={handleChange}
+            value={formData.firstName}
+            required
+            className="input-field w-full md:col-span-1 col-span-2"
+          />
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            onChange={handleChange}
+            value={formData.lastName}
+            required
+            className="input-field w-full md:col-span-1 col-span-2"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            value={formData.email}
+            required
+            className="input-field w-full md:col-span-1 col-span-2"
+          />
+          <input
+            type="text"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            value={formData.phoneNumber}
+            required
+            className="input-field w-full md:col-span-1 col-span-2"
+          />
 
           <label className="col-span-2">Food Preference:</label>
-          <select name="veg" onChange={handleChange} value={formData.veg} className="input-field col-span-2">
+          <select
+            name="veg"
+            onChange={handleChange}
+            value={formData.veg}
+            className="input-field w-full col-span-2"
+          >
             <option value="Veg">Veg</option>
             <option value="Non-Veg">Non-Veg</option>
           </select>
 
-          <label className="col-span-2">IEEE Member?</label>
-          <input type="checkbox" name="ieeeMember" onChange={handleChange} checked={formData.ieeeMember} className="col-span-2" />
+          <div className="col-span-2 flex items-center">
+            <input
+              type="checkbox"
+              name="ieeeMember"
+              onChange={handleChange}
+              checked={formData.ieeeMember}
+              className="mr-2"
+            />
+            <label>IEEE Member?</label>
+          </div>
 
           {formData.ieeeMember && (
             <>
-              <input type="text" name="ieeeMembershipId" placeholder="IEEE Membership ID" onChange={handleChange} value={formData.ieeeMembershipId} required className="input-field col-span-2" />
-              <label className="col-span-2">RAS Member?</label>
-              <input type="checkbox" name="rasMember" onChange={handleChange} checked={formData.rasMember} className="col-span-2" />
+              <input
+                type="text"
+                name="ieeeMembershipId"
+                placeholder="IEEE Membership ID"
+                onChange={handleChange}
+                value={formData.ieeeMembershipId}
+                required
+                className="input-field w-full col-span-1"
+              />
+              <div className="col-span-1 flex items-center">
+                <input
+                  type="checkbox"
+                  name="rasMember"
+                  onChange={handleChange}
+                  checked={formData.rasMember}
+                  className="mr-2"
+                />
+                <label>RAS Member?</label>
+              </div>
             </>
           )}
+          <input
+            type="text"
+            name="college"
+            placeholder="College"
+            onChange={handleChange}
+            value={formData.college}
+            required
+            className="input-field w-full col-span-2"
+          />
+          <input
+            type="text"
+            name="branch"
+            placeholder="Branch"
+            onChange={handleChange}
+            value={formData.branch}
+            required
+            className="input-field w-full col-span-2"
+          />
+          <input
+            type="text"
+            name="semester"
+            placeholder="Semester"
+            onChange={handleChange}
+            value={formData.semester}
+            required
+            className="input-field w-full col-span-2"
+          />
+          <input
+            type="text"
+            name="referralCode"
+            placeholder="Referral Code (Optional)"
+            onChange={handleChange}
+            value={formData.referralCode}
+            className="input-field w-full col-span-2"
+          />
 
-          <input type="text" name="college" placeholder="College" onChange={handleChange} value={formData.college} required className="input-field col-span-2" />
-          <input type="text" name="branch" placeholder="Branch" onChange={handleChange} value={formData.branch} required className="input-field col-span-2" />
-          <input type="text" name="semester" placeholder="Semester" onChange={handleChange} value={formData.semester} required className="input-field col-span-2" />
-
-          <button type="submit" className="btn-primary col-span-2">Next</button>
+          <button type="submit" className="btn-primary w-full col-span-2">
+            Next
+          </button>
         </form>
       ) : (
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
           <h2 className="text-xl font-bold mb-4">Register (Part 2)</h2>
 
-          <input type="text" name="transactionId" placeholder="Transaction ID" onChange={handleChange} value={formData.transactionId} required className="input-field" />
-          <input type="file" accept="image/*" onChange={handleFileChange} required className="input-field" />
+          <input
+            type="text"
+            name="transactionId"
+            placeholder="Transaction ID"
+            onChange={handleChange}
+            value={formData.transactionId}
+            required
+            className="input-field w-full"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
+            className="input-field w-full"
+          />
 
-          {loading ? <p>Loading...</p> : <button type="submit" className="btn-primary">Submit</button>}
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <button type="submit" className="btn-primary w-full">
+              Submit
+            </button>
+          )}
         </form>
       )}
     </div>
