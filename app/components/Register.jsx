@@ -139,6 +139,7 @@ const Register = () => {
       isRas,
       coupon,
     } = formData;
+    console.log(firstName, lastName, phoneNumber, email, collegeName, branchSem, ieeeId, isRas, coupon);
 
     if (
       !firstName ||
@@ -147,9 +148,7 @@ const Register = () => {
       !email ||
       !collegeName ||
       !branchSem ||
-      !isRas ||
-      !coupon ||
-      (isMember && !ieeeId)
+      (isMember && !ieeeId && isRas)
     ) {
       setError("Please fill in all the required fields.");
       return;
@@ -323,7 +322,7 @@ const Register = () => {
                 name="transactionId"
                 value={formData.transactionId}
                 onChange={handleChange}
-                className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
               />
             </div>
             <div className="flex flex-col justify-center  items-center ">
@@ -331,12 +330,12 @@ const Register = () => {
               <input
                 type="file"
                 onChange={handleFileChange}
-                className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                className="input py-2 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
               />
             </div>
             <div className="flex flex-col justify-center  items-center ">
               <button
-                className="btn btn-sm h-9 w-44  my-2 flex rounded-full text-white border border-[#505459]"
+                className="btn btn-sm px-16 py-2 flex rounded-full text-white border border-[#505459]"
                 style={{
                   background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
                 }}
@@ -365,7 +364,7 @@ const Register = () => {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      className={`input h-10 input-bordered border-2 p-3 border-white bg-[#57595d] rounded-full w-full required`}
+                      className={`input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full required`}
                     />
                   </label>
                 </div>
@@ -379,7 +378,7 @@ const Register = () => {
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>
@@ -400,7 +399,7 @@ const Register = () => {
                         name="phoneNumber"
                         value={formData.phoneNumber.replace("+91 ", "")}
                         onChange={handleChange}
-                        className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full pl-11"
+                        className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full pl-11"
                       />
                     </div>
                   </label>
@@ -415,7 +414,7 @@ const Register = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className=" input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className=" input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>
@@ -439,7 +438,7 @@ const Register = () => {
                       name="collegeName"
                       value={formData.collegeName}
                       onChange={handleChange}
-                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>
@@ -453,7 +452,7 @@ const Register = () => {
                       name="branchSem"
                       value={formData.branchSem}
                       onChange={handleChange}
-                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>
@@ -471,7 +470,7 @@ const Register = () => {
                       <input
                         type="radio"
                         name="isIeeeMember"
-                        value={formData.isRas}
+                        value={true}
                         onChange={handleChange}
                         className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
                         defaultChecked
@@ -501,50 +500,50 @@ const Register = () => {
                       name="ieeeId"
                       value={formData.ieeeId}
                       onChange={handleChange}
-                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-3 lg:gap-10">
-                <div className="flex flex-col lg:w-1/2 pl-4 pb-2">
-                  <label className="">
-                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-base lg:text-lg  py-1">
-                      Are you an Ras member?
-                    </span>
-                  </label>
-                  <div className="flex gap-16">
-                    <div className="flex gap-2">
-                      <input
-                        type="radio"
-                        name="isRasMember"
-                        value={true}
-                        onChange={handleChange}
-                        className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
-                        defaultChecked
-                      />
-                      <label>Yes</label>
-                    </div>
-                    <div className="flex gap-2">
-                      <input
-                        type="radio"
-                        name="isRasMember"
-                        value={false}
-                        onChange={handleChange}
-                        className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
-                      />
-                      <label>No</label>
-                    </div>
-                  </div>
-                </div>
+              <div className={`${isMember ? "block" : "hidden"} flex flex-col lg:w-1/2 pl-4 pb-2`}>
+      <label className="">
+        <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-base lg:text-lg py-1">
+          Are you an Ras member?
+        </span>
+      </label>
+      <div className="flex gap-16">
+        <div className="flex gap-2">
+          <input
+            type="radio"
+            name="isRasMember"
+            value="true"
+            onChange={handleChange}
+            className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
+            defaultChecked
+          />
+          <label>Yes</label>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="radio"
+            name="isRasMember"
+            value="false"
+            onChange={handleChange}
+            className="radio checked:bg-[#004278] checked:border-0 border-[3px] border-white"
+          />
+          <label>No</label>
+        </div>
+      </div>
+    </div>
 
                 <div className="flex flex-col lg:w-1/2">
                   <label>
-                    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
-                    Referal Code
+                    <span class=" after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+                    Referral Code
                     </span>
                     <input type="text"  name="coupon"  value={formData.coupon} onChange={handleChange}
-                      className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full"
+                      className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
                     />
                   </label>
                 </div>

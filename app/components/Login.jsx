@@ -42,7 +42,7 @@ const Login = () => {
           <label className='text-sm pl-4 py-1'>Ticket Number</label>
           <input 
             type="text" 
-            className="input h-10 input-bordered border-2 border-white bg-[#57595d] rounded-full w-full" 
+            className="input h-10 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full" 
             value={ticketNumber}
             onChange={(e) => setTicketNumber(e.target.value)}
             placeholder="Enter ticket number"
