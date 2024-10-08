@@ -217,7 +217,7 @@ const Register = () => {
   );
 
   const renderRadioButtons = (label, name, options) => (
-    <div className="flex flex-col w-full sm:w-1/2 pl-4 pb-2">
+    <div className="flex flex-col w-full sm:w-1/2 pl-4 pb-2 ">
       <label className="">
         <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-base lg:text-lg py-1">
           {label}
@@ -242,9 +242,9 @@ const Register = () => {
   );
 
   return (
-    <div className="text-white h-screen flex flex-col gap-7 items-center w-full max-w-screen-xl mx-auto px-4 md:px-8 overflow-auto">
+    <div className="text-white h-screen flex flex-col gap-7 items-center w-full min-h-screen  md:overflow-hidden max-w-screen-xl mx-auto px-4 md:px-8 overflow-auto">
       {error && renderError()}
-      
+
       {showDetails ? (
         <div className="w-full max-w-md flex flex-col items-center">
           <div className="text-3xl font-semibold pb-2 text-[#FFFFFFD9]">
@@ -253,17 +253,45 @@ const Register = () => {
           <div className="flex flex-col justify-center gap-3 text-[#FFFFFFE5] w-full">
             <div className="flex flex-col justify-center items-center">
               {/* <Image src={qr} width="180" height="190" alt="QR Code" /> */}
-              <Image src={qr} width="180" height="190" />   
+              <Image src={qr} width="180" height="190" />
               {/* Placeholder for QR code image */}
-              
+              <div className="flex w-full gap-3 mt-4 ">
+                <button
+                  class="bg-[#292929] border-2 border-[#3e3e3e] flex flex-col items-center justify-center rounded-lg text-white w-3/4 py-3 text-base hover:border-[#fff] cursor-pointer transition"
+                >
+                  <span className="text-xs">
+                    For RAS members
+                  </span>
+                  <span className="text-xs">666</span>
+                </button>
+                <button
+                  class="bg-[#292929] border-2 border-[#3e3e3e] flex flex-col items-center justify-center rounded-lg  text-white w-3/4 py-3 text-base hover:border-[#fff] cursor-pointer transition"
+                >
+                  <span className="text-xs">
+                    For IEEE members
+                  </span>
+                  <span className="text-xs">888</span>
+
+                </button>
+                <button
+                  class="bg-[#292929] border-2 border-[#3e3e3e] flex flex-col items-center justify-center rounded-lg text-white w-3/4 py-3 text-base hover:border-[#fff] cursor-pointer transition"
+                >
+                  <span className="text-xs">
+                    For Non-IEEE members
+                  </span>
+                  <span className="text-xs">999</span>
+
+                </button>
+
+              </div>
             </div>
-            {renderFormField("Transaction Id", "transactionId")}
             <div className="flex flex-col justify-center items-center w-full">
-              <label className="text-sm pl-4 py-1 text-left w-full">Upload File</label>
+            {renderFormField("Transaction Id", "transactionId")}
+              <label className="text-sm pl-4 py-1 text-left w-1/2">Upload File</label>
               <input
                 type="file"
                 onChange={handleFileChange}
-                className="input py-2 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-full"
+                className="input py-2 input-bordered border-2 px-4 border-white bg-[#57595d] rounded-full w-1/2"
               />
             </div>
             <div className="flex flex-col justify-center items-center w-full">
@@ -280,9 +308,7 @@ const Register = () => {
       ) : (
         <form onSubmit={handleSubmit} className="w-full max-w-4xl">
           <div className="mb-8">
-            <div className="text-3xl font-semibold text-[#FFFFFFD9] mb-4">
-              Student Details
-            </div>
+
             <div className="flex flex-wrap gap-y-4">
               <div className="flex flex-col sm:flex-row w-full gap-4">
                 {renderFormField("First Name", "firstName")}
@@ -296,9 +322,7 @@ const Register = () => {
           </div>
 
           <div className="mb-8">
-            <div className="text-3xl font-semibold text-[#FFFFFFD9] mb-4">
-              College Details
-            </div>
+
             <div className="flex flex-wrap gap-y-4">
               <div className="flex flex-col sm:flex-row w-full gap-4">
                 {renderFormField("College Name", "collegeName")}
@@ -322,7 +346,7 @@ const Register = () => {
               )}
             </div>
           </div>
-          
+
           <div className="flex justify-center">
             <button
               type="submit"

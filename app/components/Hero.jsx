@@ -5,7 +5,7 @@ import c2 from '../../public/c2.png';
 
 const Hero = () => {
   return (
-    <div className="w-full h-[90%] bg-black flex flex-col items-center justify-center">
+    <div className="w-full h-3/4 bg-black flex flex-col items-center justify-center">
       
       {/* Container with relative positioning */}
       <div className="relative flex items-center justify-center w-full h-auto">
@@ -18,7 +18,7 @@ const Hero = () => {
           height={600} 
           objectFit="contain" 
           alt="Background Image 2" 
-          className="absolute animate-spin-slow z-10" // Positioned relatively below c1
+          className="absolute animate-spin-slow z-10 " // Positioned relatively below c1
           priority 
         />
 
