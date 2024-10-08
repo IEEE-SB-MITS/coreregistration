@@ -31,10 +31,13 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
+    const newValue = value === "true" || value === "false" ? value === "true" : value;
     setFormData(prev => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      [name]: type === "checkbox" ? checked : type === "file" ? files[0] : newValue,
     }));
+
+    console.log(formData)
   };
 
   const validatePartOne = () => {
@@ -51,6 +54,18 @@ const Register = () => {
       return false;
     }
 
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.phoneNumber)) {
+      toast.error("Enter a valid 10-digit phone number.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Enter a valid email address.");
+      return false;
+    }
+    
     return true;
   };
 
@@ -197,7 +212,7 @@ const Register = () => {
     };
 
   return (
-    <div className="register-form h-full p-4 pt-0">
+    <div className="register-form h-full p-4 pt-0 w-full">
       {!partTwo ? (
         <PartOneForm
           formData={formData}
@@ -217,64 +232,107 @@ const Register = () => {
 };
 
 const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
-  <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <input
-      type="text"
-      name="firstName"
-      placeholder="First Name"
-      onChange={handleChange}
-      value={formData.firstName}
-      required
-      className="input-field w-full md:col-span-1 col-span-2"
-    />
-    <input
-      type="text"
-      name="lastName"
-      placeholder="Last Name"
-      onChange={handleChange}
-      value={formData.lastName}
-      required
-      className="input-field w-full md:col-span-1 col-span-2"
-    />
-    <input
-      type="email"
-      name="email"
-      placeholder="Email"
-      onChange={handleChange}
-      value={formData.email}
-      required
-      className="input-field w-full md:col-span-1 col-span-2"
-    />
-    <input
-      type="text"
-      name="phoneNumber"
-      placeholder="Phone Number"
-      onChange={handleChange}
-      value={formData.phoneNumber}
-      required
-      className="input-field w-full md:col-span-1 col-span-2"
-    />
-
-    <label className="col-span-2">Food Preference:</label>
-    <select
-      name="veg"
-      onChange={handleChange}
-      value={formData.veg}
-      className="input-field w-full col-span-2"
-    >
-      <option value="Veg">Veg</option>
-      <option value="Non-Veg">Non-Veg</option>
-    </select>
-
-    <div className="col-span-2 flex items-center">
+  <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 -mb-2">Student Details</div>
+    <label className='block md:col-span-1 col-span-2'>
+    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        First Name
+      </span>
       <input
-        type="checkbox"
-        name="ieeeMember"
+        type="text"
+        name="firstName"
         onChange={handleChange}
-        checked={formData.ieeeMember}
-        className="mr-2"
+        value={formData.firstName}
+        required
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
       />
-      <label>IEEE Member?</label>
+    </label>
+
+    <label className='block md:col-span-1 col-span-2'>
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        Last Name
+      </span>
+      <input
+        type="text"
+        name="lastName"
+        onChange={handleChange}
+        value={formData.lastName}
+        required
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+      />
+    </label>
+
+    <label className='block md:col-span-1 col-span-2'>
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        Email ID
+      </span>
+      <input
+        type="email"
+        name="email"
+        onChange={handleChange}
+        value={formData.email}
+        required
+        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+      />
+    </label>
+
+    <label className="block md:col-span-1 col-span-2">
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        Phone Number
+      </span>
+      <input
+        type="text"
+        name="phoneNumber"
+        onChange={handleChange}
+        value={formData.phoneNumber}
+        required
+        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+      />
+    </label>
+
+    <label className="block md:col-span-1 col-span-2">
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      Food Preference:
+      </span>
+    
+      <select
+        name="veg"
+        onChange={handleChange}
+        value={formData.veg}
+        className="px-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-lg focus:outline-none  required"
+      >
+        <option value="Veg">Veg</option>
+        <option value="Non-Veg">Non-Veg</option>
+      </select>
+    </label>
+
+
+    <div className="flex flex-col col-span-1 space-y-2 ml-5 mt-2">
+    <label className="after:content-['*'] after:ml-0.5 after:text-red-700">Are you an IEEE Member?</label>
+      <div className="flex space-x-6">
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="ieeeMember"
+            value="true"
+            checked={formData.ieeeMember}
+            onChange={handleChange}
+            className="rounded-full h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+          />
+          <span className="text-white text-sm font-medium">Yes</span>
+        </label>
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="ieeeMember"
+            value="false"
+            checked={!formData.ieeeMember}
+            onChange={handleChange}
+            className="rounded-full h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+          />
+          <span className="text-white text-sm font-medium">No</span>
+        </label>
+      </div>
     </div>
 
     {formData.ieeeMember && (
@@ -286,58 +344,84 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
           onChange={handleChange}
           value={formData.ieeeMembershipId}
           required
-          className="input-field w-full col-span-1"
+          className="pl-3 mt-2 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-full focus:outline-none required"
         />
-        <div className="col-span-1 flex items-center">
+        <div className="col-span-1 flex items-center ml-5 mt-2">
           <input
             type="checkbox"
             name="rasMember"
             onChange={handleChange}
             checked={formData.rasMember}
-            className="mr-2"
+            className="h-5 w-5 mr-3"
           />
           <label>RAS Member?</label>
         </div>
       </>
     )}
-    <input
-      type="text"
-      name="college"
-      placeholder="College"
-      onChange={handleChange}
-      value={formData.college}
-      required
-      className="input-field w-full col-span-2"
-    />
-    <input
-      type="text"
-      name="branch"
-      placeholder="Branch"
-      onChange={handleChange}
-      value={formData.branch}
-      required
-      className="input-field w-full col-span-2"
-    />
-    <input
-      type="text"
-      name="semester"
-      placeholder="Semester"
-      onChange={handleChange}
-      value={formData.semester}
-      required
-      className="input-field w-full col-span-2"
-    />
-    <input
-      type="text"
-      name="referralCode"
-      placeholder="Referral Code (Optional)"
-      onChange={handleChange}
-      value={formData.referralCode}
-      className="input-field w-full col-span-2"
-    />
 
-    <button type="submit" className="btn-primary w-full col-span-2">
-      Next
+    <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 mt-4 -mb-2">College Details</div>
+    <label className="block md:col-span-1 col-span-2">
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        College Name
+      </span>
+      <input
+        type="text"
+        name="college"
+        onChange={handleChange}
+        value={formData.college}
+        required
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+      />
+    </label>
+
+    <label className="block md:col-span-1 col-span-2">
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        Branch
+      </span>
+      <input
+        type="text"
+        name="branch"
+        onChange={handleChange}
+        value={formData.branch}
+        required
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+      />
+    </label>
+
+    <label className="block md:col-span-1 col-span-2">
+      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+        Semester
+      </span>
+      <input
+        type="text"
+        name="semester"
+        onChange={handleChange}
+        value={formData.semester}
+        required
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+      />
+    </label>
+
+    <label className="block md:col-span-1 col-span-2">
+      <span class="block text-sm pl-4 py-1">
+        Referral Code (Optional)
+      </span>
+      <input
+        type="text"
+        name="referralCode"
+        onChange={handleChange}
+        value={formData.referralCode}
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none "
+      />
+    </label>
+
+
+    <button type="submit" 
+      className="btn btn-sm h-9 w-44 col-span-2 rounded-full text-white border border-[#505459] justify-self-center mt-3"
+      style={{
+        background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
+      }}>
+      PAY NOW
     </button>
   </form>
 );

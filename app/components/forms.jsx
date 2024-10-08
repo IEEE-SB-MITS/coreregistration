@@ -34,14 +34,14 @@ const Forms = () => {
   };
 
   return (
-    <div className='w-full h-full flex flex-col justify-between items-center font-normal pt-24 relative'>
+    <div className='w-full h-full flex flex-col justify-between items-center font-normal pt-[70px] relative'>
       {/* Logo */}
       <div className='w-full absolute top-6 right-0 flex justify-end pb-10 pr-5'>
         <Image src="/logo.png" width={80} height={80} />
       </div>
 
       {/* SwitchSelector */}
-      <div className='w-2/3 md:w-72 h-10 md:h-12 mb-8'>
+      <div className='w-2/3 md:w-72 h-10 mb-8'>
         <SwitchSelector
           onChange={onChange}
           options={options}
@@ -53,7 +53,7 @@ const Forms = () => {
 
       {/* Form container */}
       <div className="flex flex-col justify-center flex-grow items-center w-full">
-        <div className="w-full md:w-3/4 overflow-hidden max-h-screen">
+        <div className="w-full md:w-4/5 overflow-hidden h-full flex  justify-center">
           {isLogin ? <Login loginfailed /> : <Register />}
         </div>
       </div>
