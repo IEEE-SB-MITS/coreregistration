@@ -54,6 +54,7 @@ const Register = () => {
     const renamedFile = new File(
       [file],
       `${newName}${file.name.substring(file.name.lastIndexOf("."))}`,
+      console.log(file.type),
       { type: file.type }
     );
     const storage = getStorage();
