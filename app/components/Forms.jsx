@@ -56,7 +56,7 @@ const Forms = () => {
       {/* Form container */}
       <div className="flex flex-col justify-center flex-grow items-center w-full">
         {/* Login or Register */}
-        <div className="w-full flex justify-center   items-center">
+        <div className="w-full flex justify-center   items-center overflow-hidden max-h-screen">
           {isLogin ? <Login loginfailed /> : <Register />}
         </div>
       </div>
