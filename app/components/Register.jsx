@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { collection, addDoc, getDoc, doc, updateDoc } from "firebase/firestore";
 import db from "../utils/firebase.config.js";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import qr from '../../public/qr.jpg';
 
 const Register = () => {
@@ -12,13 +11,9 @@ const Register = () => {
     transactionId: "",
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [file, setFile] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [ticketNumber, setTicketNumber] = useState(0);
-
-  const router = useRouter();
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -31,12 +26,28 @@ const Register = () => {
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
-  const uploadFile = (file) => {
-    const storage = getStorage();
-    const storageRef = ref(storage, `upiscreenshots/${file.name}`);
+  const renameFile = (file, transactionId) => {
+    const newName = `${transactionId}${file.name.substring(file.name.lastIndexOf("."))}`;
+    const renamedFile = new File(
+      [file],
+      newName,
+      { type: file.type }
+    );
 
-    uploadBytes(storageRef, file)
-      .then((snapshot) => console.log("Uploaded a blob or file!", snapshot))
+    console.log("Renamed file name:", renamedFile.name);
+
+    const storage = getStorage();
+    const storageRef = ref(storage, `upiscreenshots/${renamedFile.name}`);
+
+    uploadBytes(storageRef, renamedFile)
+      .then((snapshot) => {
+        console.log("Uploaded a blob or file!", snapshot);
+        return getDownloadURL(storageRef);
+      })
+      .then((url) => {
+        setUploadedImageUrl(url);
+        console.log("File available at", url);
+      })
       .catch((error) => console.error("Error uploading file:", error));
   };
 
@@ -49,7 +60,6 @@ const Register = () => {
       }
       const currentTicket = ticketDoc.data().ticketNumber;
       const nextTicket = currentTicket + 1;
-      setTicketNumber(currentTicket);
       await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
 
       const docRef = await addDoc(collection(db, "CORE"), {
@@ -59,7 +69,6 @@ const Register = () => {
       });
 
       console.log("Document written with ID: ", docRef.id);
-      window.location.href = `/ticket?ticketNumber=${currentTicket}`;
       return true;
     } catch (error) {
       console.error("Error adding document: ", error);
@@ -74,11 +83,10 @@ const Register = () => {
 
     if (success) {
       if (file) {
-        uploadFile(file);
+        renameFile(file, formData.transactionId);
       }
-      setIsSubmitted(true);
     } else {
-      setError("Error adding data");
+      console.error("Error adding data");
     }
     setLoading(false);
   };
@@ -131,7 +139,20 @@ const Register = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center"></div>
+      {uploadedImageUrl && (
+        <div className="flex flex-col items-center">
+          <div className="text-xl font-semibold pb-2 text-[#FFFFFFD9]">
+            Uploaded Image
+          </div>
+          <img src={uploadedImageUrl} alt="Uploaded" className="w-1/2" />
+          <button
+            className="btn btn-sm px-16 py-2 flex rounded-full text-white border border-[#505459] bg-gradient-to-r from-[rgba(136,158,175,0.8)] to-[rgba(27,30,32,0.744)] mt-4"
+            onClick={() => window.location.href = `/ticket?ticketNumber=${formData.transactionId}`}
+          >
+            Go to Ticket
+          </button>
+        </div>
+      )}
     </div>
   );
 };
