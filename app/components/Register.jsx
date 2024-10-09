@@ -165,7 +165,6 @@ const Register = () => {
               ticketNumber: currentTicket,
             });
     
-            console.log("Document written with ID: ", docRef);
             setLoading(false);
             toast.success("Registration successful");
             setFormData({
