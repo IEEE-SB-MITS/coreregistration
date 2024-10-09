@@ -3,10 +3,10 @@
 
   const CoreAnimation = () => {
     return (
-      <div className="w-full h-3/4  bg-black flex flex-col items-center justify-center">
+      <div className="w-full h-full  bg-black flex flex-col items-center justify-center">
  
         {/* Container with relative positioning */}
-        <div className="relative flex items-center justify-center w-full max-h-screen">
+        <div className="relative flex items-center justify-center w-1/2">
           
           {/* Background image (c2) */}
           <Image 
