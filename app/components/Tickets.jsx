@@ -114,7 +114,7 @@ const Tickets = () => {
               SEMESTER AND BRANCH
             </div>
             <div className="font-semibold text-xs md:text-base">
-              {userData.branchSem}
+            {userData.semester} {userData.branch}
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@ const Tickets = () => {
         <div className="border-black border-b-[1px] flex justify-between py-4 px-2 lg:p-5">
           <div className="flex flex-col gap-1 w-1/2">
             <div className="font-bold text-xs md:text-sm">FOOD PREFERENCE</div>
-            <div className="font-semibold text-xs md:text-base">NON-VEG</div>
+            <div className="font-semibold text-xs md:text-base">{userData.veg}</div>
           </div>
 
           <div className="flex flex-col items-end gap-1 w-1/2">
@@ -137,7 +137,7 @@ const Tickets = () => {
           <div className="flex flex-col gap-1 w-1/2">
             <div className="font-bold text-xs md:text-sm">COLLEGE NAME</div>
             <div className="font-semibold text-xs md:text-base">
-              {userData.collegeName}
+              {userData.college}
             </div>
           </div>
 
@@ -146,7 +146,7 @@ const Tickets = () => {
               IEEE MEMBERSHIP ID
             </div>
             <div className="font-semibold text-xs md:text-base">
-              {userData.ieeeId ? userData.ieeeId : "-"}
+              {userData.ieeeMembershipId ? userData.ieeeMembershipId : "-"}
             </div>
           </div>
         </div>
@@ -173,7 +173,7 @@ const Tickets = () => {
 
           <div className="flex flex-col  w-1/2">
             <div className="font-bold text-xs md:text-base">
-              5th October 2024
+              31st October - 01st November 2024
             </div>
             <div className="font-bold text-xs md:text-base">
               9 A.M. to 6 P.M.
