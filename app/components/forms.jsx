@@ -34,7 +34,7 @@ const Forms = () => {
   };
 
   return (
-    <div className='w-full h-full  bg-black  text-white flex flex-col justify-between items-center font-normal pt-[70px] relative'>
+    <div className='w-full min-h-screen lg:bg-white/10 rounded-lg text-white flex flex-col justify-between items-center font-normal pt-[70px] relative quicksand-600'>
       {/* Logo */}
       <div className='w-full absolute top-6 right-0 flex justify-end pb-10 pr-5'>
         <Image src="/logo.png" width={80} height={80} />

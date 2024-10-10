@@ -97,10 +97,10 @@ const Tickets = () => {
       ref={downloadref}
     >
       <div className="text-xl md:text-3xl flex flex-col justify-center items-center py-1 border-gray-500 text-[#D9D9D9] border-b-[0.5px]">
-        <p className="text-md py-2">&#40;ticket number: {userData.ticketNumber}&#41;</p>
+        <p className="text-md py-2">&#40;Ticket number: {userData.ticketNumber}&#41;</p>
       </div>
 
-      <div className="bg-white w-5/6 lg:w-2/3 text-black">
+      <div className="bg-white w-5/6 lg:w-2/3 text-black uppercase">
         <div className="bg-[#D9D9D9] flex justify-between py-4 px-2 lg:p-5">
           <div className="flex flex-col gap-1 w-1/2">
             <div className="font-bold text-xs md:text-sm">NAME</div>
@@ -189,7 +189,7 @@ const Tickets = () => {
               : "bg-black text-white"
           }`}
         >
-          <div className="flex justify-center capitalize text-center w-full font-bold text-xs md:text-base">
+          <div className="flex justify-center uppercase text-center w-full font-bold text-xs md:text-base">
             {userData.status}
           </div>
         </div>
@@ -205,10 +205,6 @@ const Tickets = () => {
         >
           DOWNLOAD
         </div>
-      </div>
-
-      <div className="md:hidden mb-2 ">
-        <Image src={mcr} width={211} height={95} alt="copyright" />
       </div>
     </div>
   );

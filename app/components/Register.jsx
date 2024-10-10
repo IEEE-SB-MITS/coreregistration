@@ -212,7 +212,7 @@ const Register = () => {
     };
 
   return (
-    <div className="register-form  h-full p-4 pt-0 w-full">
+    <div className="register-form  h-fit p-4 pt-0 w-full">
       {!partTwo ? (
         <PartOneForm
           formData={formData}
@@ -244,7 +244,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.firstName}
         required
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none required"
       />
     </label>
 
@@ -258,7 +258,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.lastName}
         required
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none  required"
       />
     </label>
 
@@ -272,7 +272,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.email}
         required
-        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none  required"
       />
     </label>
 
@@ -286,7 +286,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.phoneNumber}
         required
-        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none  required"
+        className="pl-3 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none  required"
       />
     </label>
 
@@ -317,7 +317,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
             value="true"
             checked={formData.ieeeMember}
             onChange={handleChange}
-            className="rounded-full h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+            className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
           />
           <span className="text-white text-sm font-medium">Yes</span>
         </label>
@@ -328,7 +328,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
             value="false"
             checked={!formData.ieeeMember}
             onChange={handleChange}
-            className="rounded-full h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+            className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
           />
           <span className="text-white text-sm font-medium">No</span>
         </label>
@@ -344,7 +344,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
           onChange={handleChange}
           value={formData.ieeeMembershipId}
           required
-          className="pl-3 mt-2 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-full focus:outline-none required"
+          className="pl-3 mt-2 w-full md:col-span-1 col-span-2 input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-md focus:outline-none required"
         />
         <div className="col-span-1 flex items-center ml-5 mt-2">
           <input
@@ -370,7 +370,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.college}
         required
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none required"
       />
     </label>
 
@@ -384,7 +384,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.branch}
         required
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none required"
       />
     </label>
 
@@ -398,7 +398,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         onChange={handleChange}
         value={formData.semester}
         required
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none required"
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none required"
       />
     </label>
 
@@ -411,13 +411,13 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         name="referralCode"
         onChange={handleChange}
         value={formData.referralCode}
-        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-full focus:outline-none "
+        className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none "
       />
     </label>
 
 
     <button type="submit" 
-      className="btn btn-sm h-9 w-44 col-span-2 rounded-full text-white border border-[#505459] justify-self-center mt-3"
+      className="btn btn-sm h-9 w-44 col-span-2 rounded-md text-white border border-[#505459] justify-self-center mt-3"
       style={{
         background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
       }}>
@@ -432,6 +432,8 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
 
 <Image src={Qr} alt="QR" width={200} height={200}/>
 <span className="text-white text-sm">Scan the QR code to make payment</span>
+<span>OR</span>
+<span>UPI ID : Q966258565@ybl</span>
 
     <input
       type="text"
@@ -440,7 +442,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
       onChange={handleChange}
       value={formData.transactionId}
       required
-      className="input-field text-black w-full"
+      className="input-field text-white bg-[#57595d] w-fit px-4 py-2 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
     />
     <input
       type="file"
@@ -448,7 +450,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
       accept="image/*"
       onChange={handleChange}
       required
-      className="input-field w-full"
+      className="input-field w-fit bg-[#57595d] px-4 py-2 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
     />
 
     <button type="submit" className="flex items-center bg-slate-500 text-white gap-1 px-4 py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
