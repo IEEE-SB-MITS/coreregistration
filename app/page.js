@@ -6,8 +6,8 @@ import { StarsBackground } from '@/components/ui/stars-background';
 export default function Home() {
   return (
     <div className="h-screen w-screen flex">
-           <ShootingStars/>
-           <StarsBackground starDensity={0.001}/>
+           {/* <ShootingStars/>
+           <StarsBackground starDensity={0.001}/> */}
       <div className="w-1/2  justify-center items-center md:block hidden">
         <CoreAnimation />
       </div>
