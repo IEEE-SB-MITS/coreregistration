@@ -211,7 +211,7 @@ const Register = () => {
     };
 
   return (
-    <div className="register-form h-full p-4 pt-0 w-full">
+    <div className="register-form  h-full p-4 pt-0 w-full">
       {!partTwo ? (
         <PartOneForm
           formData={formData}
@@ -426,7 +426,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 );
 
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
-  <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+  <form onSubmit={handleSubmit} className="grid grid-cols-1  gap-4">
     <h2 className="text-xl font-bold mb-4">Register (Part 2)</h2>
 
     <input
@@ -436,7 +436,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
       onChange={handleChange}
       value={formData.transactionId}
       required
-      className="input-field w-full"
+      className="input-field text-black w-full"
     />
     <input
       type="file"
