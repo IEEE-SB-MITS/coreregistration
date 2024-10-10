@@ -4,7 +4,8 @@ import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import db from "../../utils/config";
-
+import Image from "next/image";
+import Qr from '../../public/qr.png';
 const initialFormData = {
   firstName: "",
   lastName: "",
@@ -426,8 +427,11 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 );
 
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
-  <form onSubmit={handleSubmit} className="grid grid-cols-1  gap-4">
+  <form onSubmit={handleSubmit} className="flex flex-col grid-cols-1  items-center justify-center gap-4">
     <h2 className="text-xl font-bold mb-4">Register (Part 2)</h2>
+
+<Image src={Qr} alt="QR" width={200} height={200}/>
+<span className="text-white text-sm">Scan the QR code to make payment</span>
 
     <input
       type="text"
