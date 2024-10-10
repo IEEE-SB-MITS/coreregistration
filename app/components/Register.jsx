@@ -451,7 +451,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
       className="input-field w-full"
     />
 
-    <button type="submit" className="btn-primary w-full" disabled={loading}>
+    <button type="submit" className="flex items-center bg-slate-500 text-white gap-1 px-4 py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
       {loading ? "Loading..." : "Submit"}
     </button>
   </form>
