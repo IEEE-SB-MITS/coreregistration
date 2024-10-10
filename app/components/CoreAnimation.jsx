@@ -6,17 +6,17 @@ const CoreAnimation = () => {
     <div className="w-full h-[90%] bg-black flex flex-col items-center justify-center">
       
       {/* Container with relative positioning */}
-      <div className="relative flex items-center justify-center w-full h-auto">
+      <div className="relative flex items-center justify-center w-full h-3/4">
         
         {/* Background image (c2) */}
         <Image 
           src="/c2.png"
           layout="intrinsic" 
-          width={600} 
-          height={600} 
+          width={500} 
+          height={500} 
           objectFit="contain" 
           alt="Background Image 2" 
-          className="absolute animate-spin-slow z-10" // Positioned relatively below c1
+          className="absolute animate-spin-slow z-10 ml-3" // Positioned relatively below c1
           priority 
         />
 
@@ -27,11 +27,11 @@ const CoreAnimation = () => {
         <Image 
           src="/c1.png" 
           layout="intrinsic" 
-          width={600} 
-          height={600} 
+          width={500} 
+          height={500} 
           objectFit="contain" 
           alt="Foreground Image 1" 
-          className="absolute  z-30" // Positioned above both c2 and c3
+          className="absolute  z-0" // Positioned above both c2 and c3
           priority 
         />
       </div>

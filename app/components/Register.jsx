@@ -224,7 +224,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
       onChange={handleChange}
       value={formData.firstName}
       required
-      className="input-field w-full md:col-span-1 col-span-2"
+      className="input-field  w-full md:col-span-1 col-span-2 "
     />
     <input
       type="text"
