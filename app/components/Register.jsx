@@ -29,6 +29,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [partTwo, setPartTwo] = useState(false);
   const storage = getStorage();
+  const [amount, setAmount] = useState(0);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -37,8 +38,18 @@ const Register = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : type === "file" ? files[0] : newValue,
     }));
-
+    calculateAmount({ ...formData, [name]: type === 'checkbox' ? checked : value });
     console.log(formData)
+  };
+
+  const calculateAmount = (data) => {
+    if (data.ieeeMember && data.rasMember) {
+      setAmount(666);
+    } else if (data.ieeeMember) {
+      setAmount(888);
+    } else {
+      setAmount(999); // or any default amount
+    }
   };
 
   const validatePartOne = () => {
@@ -225,6 +236,7 @@ const Register = () => {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           loading={loading}
+          amount={amount}
         />
       )}
     </div>
@@ -426,9 +438,9 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
   </form>
 );
 
-const PartTwoForm = ({ formData, handleChange, handleSubmit, loading }) => (
+const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
   <form onSubmit={handleSubmit} className="flex flex-col grid-cols-1  items-center justify-center gap-4">
-    <h2 className="text-xl font-bold mb-4">Register (Part 2)</h2>
+    <h2 className="text-xl font-bold mb-4">Amount To Pay : ₹ {amount}</h2>
 
 <Image src={Qr} alt="QR" width={200} height={200}/>
 <span className="text-white text-sm">Scan the QR code to make payment</span>
