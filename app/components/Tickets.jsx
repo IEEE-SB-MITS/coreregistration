@@ -97,7 +97,7 @@ const Tickets = () => {
       ref={downloadref}
     >
       <div className="text-xl md:text-3xl flex flex-col justify-center items-center py-1 border-gray-500 text-[#D9D9D9] border-b-[0.5px]">
-        <p className="text-md py-2">&#40;Ticket number: {userData.ticketNumber}&#41;</p>
+        <p className="text-md py-2">Ticket number: {userData.ticketNumber}</p>
       </div>
 
       <div className="bg-white w-5/6 lg:w-2/3 text-black uppercase">
@@ -173,7 +173,7 @@ const Tickets = () => {
 
           <div className="flex flex-col  w-1/2">
             <div className="font-bold text-xs md:text-base">
-              31st October - 01st November 2024
+              30st October - 31st October 2024
             </div>
             <div className="font-bold text-xs md:text-base">
               9 A.M. to 6 P.M.
