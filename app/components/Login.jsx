@@ -7,23 +7,24 @@ import db from '../../utils/config';
 
 const Login = () => {
   const [ticketNumber, setTicketNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const fetchTicketDetails = async () => {
-    if (!ticketNumber) {
-      setError("Please enter a valid ticket number.");
+    if (!ticketNumber || !email) {
+      setError("Please enter a valid ticket number and email.");
       return;
     }
 
     try {
-      const q = query(collection(db, "CORE"), where("ticketNumber", "==", parseInt(ticketNumber)));
+      const q = query(collection(db, "CORE"), where("ticketNumber", "==", parseInt(ticketNumber)), where("email", "==", email));
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        router.push(`/ticket?ticketNumber=${ticketNumber}`); 
+        router.push(`/ticket?ticketNumber=${ticketNumber}&email=${email}`); 
       } else {
-        setError("Ticket not found. Please check your ticket number.");
+        setError("Ticket not found. Please check your ticket number and email.");
       }
     } catch (error) {
       console.error("Error fetching ticket: ", error);
@@ -42,6 +43,16 @@ const Login = () => {
             value={ticketNumber}
             onChange={(e) => setTicketNumber(e.target.value)}
             placeholder="Enter ticket number"
+          />
+        </div>
+        <div className='flex flex-col w-full'>
+          <label className='text-sm pl-4 py-1'>Email</label>
+          <input 
+            type="email" 
+            className="input h-10 input-bordered border-2 px-4 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-full w-full" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
           />
         </div>
       </div>
