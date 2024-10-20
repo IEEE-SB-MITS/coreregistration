@@ -439,13 +439,14 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 );
 
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
-  <form onSubmit={handleSubmit} className="flex flex-col grid-cols-1  items-center justify-center gap-4">
+  <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center ">
     <h2 className="text-xl font-bold mb-4">Amount To Pay : ₹ {amount}</h2>
 
 <Image src={Qr} alt="QR" width={200} height={200}/>
 <span className="text-white text-sm">Scan the QR code to make payment</span>
 <span>OR</span>
 <span>UPI ID : Q966258565@ybl</span>
+<div className="flex flex-col items-center justify-center ">
 
     <input
       type="text"
@@ -454,7 +455,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
       onChange={handleChange}
       value={formData.transactionId}
       required
-      className="input-field text-white bg-[#57595d] w-fit px-4 py-2 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
+      className="input-field text-white bg-[#57595d] w-fit  px-1 py-1 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
     />
     <input
       type="file"
@@ -462,12 +463,13 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
       accept="image/*"
       onChange={handleChange}
       required
-      className="input-field w-fit bg-[#57595d] px-4 py-2 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
+      className="input-field w-fit bg-[#57595d] px-1 py-1 m-5 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
     />
 
-    <button type="submit" className="flex items-center bg-slate-500 text-white gap-1 px-4 py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
+    <button type="submit" className="flex items-center  bg-slate-500 text-white gap-1 px-2  py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
       {loading ? "Loading..." : "Submit"}
     </button>
+</div>
   </form>
 );
 

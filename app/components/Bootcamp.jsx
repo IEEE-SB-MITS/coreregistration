@@ -175,11 +175,11 @@ const Register = () => {
                         throw new Error("Ticket document does not exist!");
                     }
 
-                    const currentTicket = ticketDoc.data().bootcamp;
+                    const currentTicket = ticketDoc.data().ticketNumber;
                     const nextTicket = currentTicket + 1;
 
                     // Update ticket number in Firestore
-                    await updateDoc(ticketDocRef, { bootcamp: nextTicket });
+                    await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
 
                     // Generate a unique userId
                     const userId = uuidv4();
@@ -190,7 +190,7 @@ const Register = () => {
                         paymentScreenshotUrl: screenshotUrl, // Store the URL here
                         ticketNumber: currentTicket,
                     });
-                    const email = formData.email;
+
                     setLoading(false);
                     toast.success("Registration successful");
                     setFormData({
@@ -214,7 +214,7 @@ const Register = () => {
                     });
 
                     // Redirect to ticket page
-                    window.location.href = `/ticket?ticketNumber=${currentTicket}&email=${email}`;
+                    window.location.href = `/ticket?ticketNumber=${currentTicket}`;
                 }
             );
         } catch (error) {
