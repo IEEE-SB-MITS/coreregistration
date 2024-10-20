@@ -191,7 +191,7 @@ const Register = () => {
               paymentScreenshotUrl: screenshotUrl, // Store the URL here
               ticketNumber: currentTicket,
             });
-    
+            const email = formData.email;
             setLoading(false);
             toast.success("Registration successful");
             setFormData({
@@ -212,7 +212,7 @@ const Register = () => {
             });
             
             // Redirect to ticket page
-            window.location.href = `/ticket?ticketNumber=${currentTicket}`;
+            window.location.href = `/ticket?ticketNumber=${currentTicket}&email=${email}`;
           }
         );
       } catch (error) {
