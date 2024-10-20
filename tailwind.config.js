@@ -76,6 +76,7 @@ module.exports = {
     
         'spin-slow': 'spin 30s linear infinite',
         'spin-slow2': 'spin 90s ease-out infinite',
+        'pulse-er': 'pulse 10s ease-out infinite',
 
       },
     },

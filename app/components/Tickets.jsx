@@ -54,7 +54,13 @@ const Tickets = () => {
   }
 
   if (!userData) {
-    return <div>Ticket not found.</div>;
+    return <div className="w-full h-full flex items-center justify-center">
+    <button
+      class="text-zinc-500 hover:text-zinc-200 backdrop-blur-lg animate-pulse-er bg-gradient-to-tr from-transparent via-[rgba(121,121,121,0.16)] to-transparent rounded-md py-2 px-6 shadow hover:shadow-zinc-400 duration-700"
+    >
+      Ticket not found. Please check your ticket number and email.
+    </button>
+    </div>;
   }
 
   const handleDownload = () => {
@@ -100,43 +106,29 @@ const Tickets = () => {
   return (
     <div
       ref={downloadref}
-      className="flex flex-col gap-4 justify-center h-full items-center text-white w-full"
+      className="flex flex-col relative gap-4 justify-center h-full items-center text-white w-full"
     >
       <TicketComponent userData={userData} handleDownload={handleDownload} />
-      <button className="cursor-pointer group relative flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md absolute bottom-0" onClick={handleDownload}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          height="24px"
-          width="24px"
-        >
-          <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            id="SVGRepo_tracerCarrier"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            {" "}
-            <g id="Interface / Download">
-              {" "}
-              <path
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2"
-                stroke="#f1f1f1"
-                d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12"
-                id="Vector"
-              ></path>{" "}
-            </g>{" "}
-          </g>
-        </svg>
-        Download
-        <div className="absolute opacity-0 -bottom-full rounded-md py-2 px-2 bg-black bg-opacity-70 left-1/2 -translate-x-1/2 group-hover:opacity-100 transition-opacity shadow-lg">
-          Download
-        </div>
-      </button>
+  
+<button
+  class="cursor-pointer absolute bottom-10 right-10 bg-gray-800 px-3 py-2 rounded-md text-white tracking-wider shadow-xl animate-bounce hover:animate-none"
+>
+  <svg
+    class="w-5 h-5"
+    stroke="currentColor"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    ></path>
+  </svg>
+</button>
+
     </div>
   );
 };
