@@ -12,7 +12,7 @@ const Ticket = () => {
         <CoreAnimation />
       </div>
       
-      <div className='flex flex-col w-full md:w-1/2 bg-white/10 rounded-lg bg-opacity-90'>
+      <div className='flex flex-col w-full md:w-1/2 rounded-lg '>
       <div className='w-full flex justify-end pb-5 pt-5 pr-5'><Image src={logo} width={80} height={80} /></div>
       <Tickets/>
       </div>
