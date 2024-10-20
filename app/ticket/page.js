@@ -12,9 +12,12 @@ const Ticket = () => {
         <CoreAnimation />
       </div>
       
-      <div className='flex flex-col w-full md:w-1/2 rounded-lg '>
-      <div className='w-full flex justify-end pb-5 pt-5 pr-5'><Image src={logo} width={80} height={80} /></div>
+      <div className='flex flex-col relative w-full md:w-1/2 rounded-lg '>
+      <div className='w-full flex justify-end absolute right-5 top-5 '><Image src={logo} alt='logo' width={80} height={80} /></div>
+      <div className=' h-full overflow-hidden  flex items-end   '>
+
       <Tickets/>
+      </div>
       </div>
         
     </div>

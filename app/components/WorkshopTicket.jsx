@@ -11,7 +11,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
               <div className="text-md">WORKSHOP : {userData.Workshop}</div>
               <div className="text-md">Ticket number: #{userData.ticketNumber}</div>
             </div>
-            <QRCode value={String(userData.ticketNumber)} size={120} />
+            <QRCode value={String(userData.ticketNumber)} size={100} />
           </div>
         </div>
       </div>

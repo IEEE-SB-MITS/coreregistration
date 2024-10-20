@@ -106,7 +106,7 @@ const Tickets = () => {
   return (
     <div
       ref={downloadref}
-      className="flex flex-col relative gap-4 justify-center h-full items-center text-white w-full"
+      className="flex flex-col relative gap-4 justify-end h-[90%] items-center text-white w-full"
     >
       <TicketComponent userData={userData} handleDownload={handleDownload} />
 

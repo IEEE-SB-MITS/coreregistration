@@ -11,7 +11,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
               <div className="text-md">CONCLAVE</div>
               <div className="text-md">Ticket number: #{userData.ticketNumber}</div>
             </div>
-            <QRCode value={String(userData.ticketNumber)} size={120} />
+            <QRCode value={String(userData.ticketNumber)} size={100} />
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
               <div className="text-md pb-1 flex text-bold justify-center md:justify-end">
                 <span className="font-bold">{label} :</span>
               </div>
-              <div className="text-md pb-3 md:py-3 text-center md:text-left">{value}</div>
+              <div className="text-md pb-3  text-center md:text-left">{value}</div>
             </React.Fragment>
           ))}
         </div>
