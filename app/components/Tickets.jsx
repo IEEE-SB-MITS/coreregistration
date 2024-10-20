@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import db from "../../utils/config";
-import NormalTicket from "./NormalTicket";
-import WorkshopTicket from "./WorkshopTicket";
+import NormalTicket from './NormalTicket'; 
+import WorkshopTicket from './WorkshopTicket'; 
 import html2canvas from "html2canvas";
 
 const Tickets = () => {
@@ -16,7 +16,7 @@ const Tickets = () => {
     const fetchUserData = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const ticketNum = urlParams.get("ticketNumber");
-      const email = urlParams.get("email");
+      const email = urlParams.get("email"); 
 
       if (ticketNum) {
         setTicketNumber(ticketNum);
@@ -26,7 +26,7 @@ const Tickets = () => {
           const q = query(
             collection(db, "CORE"),
             where("ticketNumber", "==", ticketNumberInt),
-            where("email", "==", email)
+            where("email", "==", email) 
           );
           const querySnapshot = await getDocs(q);
 
@@ -47,7 +47,7 @@ const Tickets = () => {
     };
 
     fetchUserData();
-  }, []);
+  }, []); 
 
   if (loading) {
     return <div>Loading...</div>;
@@ -66,7 +66,7 @@ const Tickets = () => {
   const handleDownload = () => {
     if (downloadref.current) {
       html2canvas(downloadref.current, {
-        backgroundColor: "#000000",
+        backgroundColor: "#000000", 
         ignoreElements: (element) => {
           const style = window.getComputedStyle(element);
           return style.backgroundImage !== "none";
@@ -77,10 +77,10 @@ const Tickets = () => {
             const el = elements[i];
             const style = window.getComputedStyle(el);
             if (style.color.startsWith("oklch(")) {
-              el.style.color = "#FFFFFF";
+              el.style.color = "#FFFFFF"; 
             }
             if (style.backgroundColor.startsWith("oklch(")) {
-              el.style.backgroundColor = "#000000";
+              el.style.backgroundColor = "#000000"; 
             }
           }
         },
