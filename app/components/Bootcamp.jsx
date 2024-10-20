@@ -175,11 +175,11 @@ const Register = () => {
                         throw new Error("Ticket document does not exist!");
                     }
 
-                    const currentTicket = ticketDoc.data().ticketNumber;
+                    const currentTicket = ticketDoc.data().bootcamp;
                     const nextTicket = currentTicket + 1;
 
                     // Update ticket number in Firestore
-                    await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
+                    await updateDoc(ticketDocRef, { bootcamp: nextTicket });
 
                     // Generate a unique userId
                     const userId = uuidv4();
