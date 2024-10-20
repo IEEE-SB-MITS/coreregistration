@@ -110,7 +110,7 @@ const Tickets = () => {
     >
       <TicketComponent userData={userData} handleDownload={handleDownload} />
 
-      <button class="cursor-pointer absolute bottom-10 right-10 bg-gray-800 px-3 py-2 rounded-md text-white tracking-wider shadow-xl animate-bounce hover:animate-none">
+      <button class="cursor-pointer fixed bottom-10 right-10 bg-gray-800 px-3 py-2 rounded-md text-white tracking-wider shadow-xl animate-bounce hover:animate-none">
         <svg
           class="w-5 h-5"
           stroke="currentColor"
