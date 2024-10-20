@@ -326,9 +326,14 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
                 <span className="text-white text-sm font-medium">No</span>
             </label>
         </div>
+        <div className="w-full flex justify-center items-center">
 
 
-        <button type="submit" className="btn">Next</button>
+        <button type="submit"  className="btn btn-sm h-9 w-44 col-span-2 rounded-md text-white border border-[#505459] justify-self-center mt-3"
+            style={{
+                background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
+            }}>Next</button>
+        </div>
     </form>
 );
 
