@@ -31,7 +31,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
               <div className="text-md pb-1 flex text-bold justify-center md:justify-end">
                 <span className="font-bold">{label} :</span>
               </div>
-              <div className="text-md pb-3 text-center md:text-left">{value}</div>
+              <div className="text-md pb-3 md:py-3 text-center md:text-left">{value}</div>
             </React.Fragment>
           ))}
         </div>
