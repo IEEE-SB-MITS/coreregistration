@@ -8,7 +8,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
         <div className="flex justify-between flex-col items-center px-5 py-2 h-full">
           <div className="flex justify-between items-center w-full h-full">
             <div>
-              <div className="text-md">WORKSHOP</div>
+              <div className="text-md">WORKSHOP : {userData.Workshop}</div>
               <div className="text-md">
                 Ticket number: #{userData.ticketNumber}
               </div>
