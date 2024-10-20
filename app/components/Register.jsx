@@ -244,7 +244,7 @@ const Register = () => {
 };
 
 const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
-  <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
+  <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 px-5 md:px-0">
     <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 -mb-2">Student Details</div>
     <label className='block md:col-span-1 col-span-2'>
     <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
@@ -439,7 +439,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 );
 
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
-  <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center ">
+  <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center px-5 md:px-0 ">
     <h2 className="text-xl font-bold mb-4">Amount To Pay : ₹ {amount}</h2>
 
 <Image src={Qr} alt="QR" width={200} height={200}/>
