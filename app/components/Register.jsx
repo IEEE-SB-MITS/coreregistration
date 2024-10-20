@@ -247,7 +247,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
   <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 px-5 md:px-0">
     <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 -mb-2">Student Details</div>
     <label className='block md:col-span-1 col-span-2'>
-    <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+    <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         First Name
       </span>
       <input
@@ -261,7 +261,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className='block md:col-span-1 col-span-2'>
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         Last Name
       </span>
       <input
@@ -275,7 +275,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className='block md:col-span-1 col-span-2'>
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         Email ID
       </span>
       <input
@@ -289,7 +289,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className="block md:col-span-1 col-span-2">
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         Phone Number
       </span>
       <input
@@ -303,7 +303,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className="block md:col-span-1 col-span-2">
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
       Food Preference:
       </span>
     
@@ -373,7 +373,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 
     <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 mt-4 -mb-2">College Details</div>
     <label className="block md:col-span-1 col-span-2">
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         College Name
       </span>
       <input
@@ -387,7 +387,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className="block md:col-span-1 col-span-2">
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         Branch
       </span>
       <input
@@ -401,7 +401,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className="block md:col-span-1 col-span-2">
-      <span class="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         Semester
       </span>
       <input
@@ -415,7 +415,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </label>
 
     <label className="block md:col-span-1 col-span-2">
-      <span class="block text-sm pl-4 py-1">
+      <span className="block text-sm pl-4 py-1">
         Referral Code (Optional)
       </span>
       <input
@@ -440,10 +440,43 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
   <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center px-5 md:px-0 ">
-    <h2 className="text-xl font-bold mb-4">Amount To Pay : ₹ {amount}</h2>
+  <div className="flex justify-center items-center ">
+<button
+  className="group/button relative inline-flex items-center m-5 justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+>
+  <span className="">IEEE Members<br/>1199
+</span>
+  <div
+    className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div className="relative h-full w-10 bg-white/20"></div>
+  </div>
+</button>
+<button
+  className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg   text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+>
+  <span className="text-lg">Ras Members<br/>999</span>
+  <div
+    className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div className="relative h-full w-10 bg-white/20"></div>
+  </div>
+</button>
+<button
+  className="group/button relative inline-flex m-5   items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg   text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+>
+  <span className="text-lg">Non-IEEE Members<br/>1399</span>
+  <div
+    className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+  >
+    <div className="relative h-full w-10 bg-white/20"></div>
+  </div>
+</button>
 
-<Image src={Qr} alt="QR" width={200} height={200}/>
-<span className="text-white text-sm">Scan the QR code to make payment</span>
+  </div>
+
+    <Image src={Qr} alt="QR" width={180} height={180} />
+    <span className="text-white text-sm">Scan the QR code to make payment</span>
 <span>OR</span>
 <span>UPI ID : Q966258565@ybl</span>
 <div className="flex flex-col items-center justify-center ">
