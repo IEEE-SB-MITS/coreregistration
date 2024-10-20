@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import db from "../../utils/config";
-import NormalTicket from './NormalTicket'; 
-import WorkshopTicket from './WorkshopTicket'; 
+import NormalTicket from "./NormalTicket";
+import WorkshopTicket from "./WorkshopTicket";
 import html2canvas from "html2canvas";
 
 const Tickets = () => {
@@ -16,6 +16,7 @@ const Tickets = () => {
     const fetchUserData = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const ticketNum = urlParams.get("ticketNumber");
+      const email = urlParams.get("email");
 
       if (ticketNum) {
         setTicketNumber(ticketNum);
@@ -24,7 +25,8 @@ const Tickets = () => {
         try {
           const q = query(
             collection(db, "CORE"),
-            where("ticketNumber", "==", ticketNumberInt)
+            where("ticketNumber", "==", ticketNumberInt),
+            where("email", "==", email)
           );
           const querySnapshot = await getDocs(q);
 
@@ -45,7 +47,7 @@ const Tickets = () => {
     };
 
     fetchUserData();
-  }, []); 
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -58,7 +60,7 @@ const Tickets = () => {
   const handleDownload = () => {
     if (downloadref.current) {
       html2canvas(downloadref.current, {
-        backgroundColor: "#000000", 
+        backgroundColor: "#000000",
         ignoreElements: (element) => {
           const style = window.getComputedStyle(element);
           return style.backgroundImage !== "none";
@@ -69,10 +71,10 @@ const Tickets = () => {
             const el = elements[i];
             const style = window.getComputedStyle(el);
             if (style.color.startsWith("oklch(")) {
-              el.style.color = "#FFFFFF"; 
+              el.style.color = "#FFFFFF";
             }
             if (style.backgroundColor.startsWith("oklch(")) {
-              el.style.backgroundColor = "#000000"; 
+              el.style.backgroundColor = "#000000";
             }
           }
         },
@@ -96,19 +98,45 @@ const Tickets = () => {
   }
 
   return (
-    <div ref={downloadref} className="flex flex-col gap-4 justify-center h-full items-center text-white w-full">
+    <div
+      ref={downloadref}
+      className="flex flex-col gap-4 justify-center h-full items-center text-white w-full"
+    >
       <TicketComponent userData={userData} handleDownload={handleDownload} />
-      <div>
-        <div
-          className="btn btn-sm h-9 w-44 flex justify-center items-center rounded-full absolute bottom-10 right-0 text-white border border-[#505459]"
-          style={{
-            background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
-          }}
-          onClick={handleDownload}
+      <button className="cursor-pointer group relative flex gap-1.5 px-8 py-4 bg-black bg-opacity-80 text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 transition font-semibold shadow-md absolute bottom-0" onClick={handleDownload}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          height="24px"
+          width="24px"
         >
-          DOWNLOAD
+          <g stroke-width="0" id="SVGRepo_bgCarrier"></g>
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            id="SVGRepo_tracerCarrier"
+          ></g>
+          <g id="SVGRepo_iconCarrier">
+            {" "}
+            <g id="Interface / Download">
+              {" "}
+              <path
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="2"
+                stroke="#f1f1f1"
+                d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12"
+                id="Vector"
+              ></path>{" "}
+            </g>{" "}
+          </g>
+        </svg>
+        Download
+        <div className="absolute opacity-0 -bottom-full rounded-md py-2 px-2 bg-black bg-opacity-70 left-1/2 -translate-x-1/2 group-hover:opacity-100 transition-opacity shadow-lg">
+          Download
         </div>
-      </div>
+      </button>
     </div>
   );
 };
