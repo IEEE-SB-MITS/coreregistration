@@ -14,7 +14,7 @@ const AdminPanel = () => {
     // Check if the user is authenticated
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser && currentUser.email === "xrg@gmail.com") {
+            if (currentUser && currentUser.email === "ieeesb@mgits.ac.in") {
                 setUser(currentUser);
             } else {
                 window.location.href = "/admin/login"; // Redirect to login if not authenticated
