@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 
 const WorkshopTicket = ({ userData, handleDownload }) => {
   return (
-    <div className="w-5/6 h-full lg:w-3/5 text-black uppercase flex flex-col justify-center items-center">
+    <div className="w-5/6 h-full lg:w-3/5 text-black uppercase flex flex-col justify-center items-center py-10 md:py-0">
       <div className="w-full h-1/5 bg-white rounded-xl">
         <div className="flex justify-between flex-col items-center px-5 py-2 h-full">
           <div className="flex justify-between items-center w-full h-full">
@@ -15,7 +15,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
           </div>
         </div>
       </div>
-      <div className="w-full h-auto bg-white border-y-black border-dashed border-2 rounded-xl p-5">
+      <div className="w-full h-auto bg-white border-y-black border-dashed border-2 rounded-xl p-5 py-10 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             { label: "NAME", value: userData.firstName },
@@ -31,7 +31,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
               <div className="text-md pb-1 flex justify-center md:justify-end">
                 <span className="font-bold">{label} :</span>
               </div>
-              <div className="text-md pb-2 md:py-3 text-center">{value}</div>
+              <div className="text-md pb-2 text-center md:text-left">{value}</div>
             </React.Fragment>
           ))}
         </div>
