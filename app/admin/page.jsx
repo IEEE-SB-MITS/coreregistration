@@ -139,19 +139,19 @@ export default function AdminPanel() {
 
   if (!user || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen md:bg-gray-100 bg-white">
-        <Card className="w-full max-w-md">
-          <CardContent className="flex flex-col items-center justify-center h-60">
-            <div className="w-16 h-16 relative">
-              <div className="w-16 h-16 border-4 border-t-primary border-r-primary border-b-primary border-l-primary border-solid rounded-full animate-spin"></div>
-              <div className="w-16 h-16 border-4 border-t-transparent border-r-transparent border-b-transparent border-l-primary border-solid rounded-full animate-ping absolute top-0 left-0"></div>
-            </div>
-            <p className="text-lg mt-4 text-primary animate-pulse">
-              Loading...
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+                                  <div className="flex justify-center items-center min-h-screen bg-gray-100">
+                    <Card className="w-full max-w-md p-4 md:p-0 bg-transparent md:bg-white shadow-none md:shadow-lg border-none md:border">
+                        <CardContent className="flex flex-col items-center justify-center h-60">
+                            <div className="w-16 h-16 relative">
+                                <div className="w-16 h-16 border-4 border-t-primary border-r-primary border-b-primary border-l-primary border-solid rounded-full animate-spin"></div>
+                                <div className="w-16 h-16 border-4 border-t-transparent border-r-transparent border-b-transparent border-l-primary border-solid rounded-full animate-ping absolute top-0 left-0"></div>
+                            </div>
+                            <p className="text-lg mt-4 text-primary animate-pulse">
+                                Loading...
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
     );
   }
 
