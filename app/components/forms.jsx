@@ -13,19 +13,19 @@ const Forms = () => {
 
   const options = [
     {
-      label: 'Conclave',
+      label: 'CONCLAVE',
       value: 0,
       selectedBackgroundColor: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
       selectedFontColor: '#fff',
     },
     {
-      label: 'BootCamp',
+      label: 'MASTERCLASS',
       value: 1,
       selectedBackgroundColor: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
       selectedFontColor: '#fff',
     },
     {
-      label: 'Login',
+      label: 'LOGIN',
       value: 2,
       selectedBackgroundColor: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
       selectedFontColor: '#fff',
@@ -50,7 +50,7 @@ const Forms = () => {
       </div>
 
       {/* SwitchSelector */}
-      <div className='w-2/3 md:w-72 h-10 mb-8'>
+      <div className='w-4/5 lg:w-2/3 h-10 mb-8'>
         <SwitchSelector
           onChange={onChange}
           options={options}
