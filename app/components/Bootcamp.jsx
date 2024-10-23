@@ -533,11 +533,16 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
     </form>
 );
 
+const isEmailValid = (email) => {
+    const regex = /^24.*@mgits\.ac\.in$/;
+    return regex.test(email);
+  };
+
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
     <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center  px-5 md:px-0">
        
        <div className="flex justify-center items-center ">
-       {formData.ieeeMember && !formData.rasMember && (
+       {formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
   <button
     disabled
     className="group/button relative inline-flex items-center m-5 justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
@@ -554,7 +559,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
     </div>
   </button>
 )}
-{formData.ieeeMember && formData.rasMember && (
+{formData.ieeeMember && formData.rasMember && !isEmailValid(formData.email) &&(
   <button
     disabled
     className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
@@ -571,7 +576,7 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
     </div>
   </button>
 )}
-{!formData.ieeeMember && !formData.rasMember && (
+{!formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
   <button
     disabled
     className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
@@ -587,7 +592,25 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
       <div className="relative h-full w-10 bg-white/20"></div>
     </div>
   </button>
+
 )}
+{isEmailValid(formData.email) && (
+        <button
+          disabled
+          className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+        >
+          <span className="text-md m-3">
+            MITS 1st Year Only
+            <br />
+            999
+          </span>
+          <div
+            className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+          >
+            <div className="relative h-full w-10 bg-white/20"></div>
+          </div>
+        </button>
+      )}
 
   </div>
 
