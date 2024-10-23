@@ -139,7 +139,7 @@ export default function AdminPanel() {
 
   if (!user || loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="flex justify-center items-center min-h-screen md:bg-gray-100 bg-white">
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center h-60">
             <div className="w-16 h-16 relative">
