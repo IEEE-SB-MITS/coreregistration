@@ -160,7 +160,7 @@ export default function AdminPanel() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
-          <div className="space-x-2">
+          <div className="space-x-2 space-y-2 flex flex-col md:flex-row">
             <Button onClick={handleExport} variant="outline">
               <FileSpreadsheet className="mr-2 h-4 w-4" />
               Export to Excel
