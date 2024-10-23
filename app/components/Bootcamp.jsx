@@ -333,7 +333,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
             <button type="submit" className="btn btn-sm h-9 w-44 col-span-2 rounded-md text-white border border-[#505459] justify-self-center mt-3"
                 style={{
                     background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
-                }}>Next</button>
+                }}>PAY NOW</button>
         </div>
     </form>
 );
@@ -528,7 +528,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
             style={{
                 background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
             }}>
-            PAY NOW
+           NEXT
         </button>
     </form>
 );

@@ -120,7 +120,7 @@ export default function AdminPanel() {
       ieeeMember: participant.ieeeMember,
       rasMember: participant.rasMember,
       referralCode: participant.referralCode,
-      transactionId: participant.transactionId.toString().padStart(12, "0"), 
+      transactionId: participant.transactionId.toString().padStart(12, "0"),
       paymentUrl: participant.paymentScreenshotUrl,
     }));
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -129,9 +129,14 @@ export default function AdminPanel() {
     XLSX.writeFile(workbook, "participants.xlsx");
   };
 
+  const earlyBird = participants.filter((p) =>
+    p.ticketNumber.startsWith("10") && !p.ticketNumber.startsWith("1002")
+);
+
   const conclaveParticipants = participants.filter((p) =>
-    p.ticketNumber.startsWith("10")
+    p.ticketNumber.startsWith("1002")
   );
+
 
   const bootcampParticipants = participants.filter((p) =>
     p.ticketNumber.startsWith("20")
@@ -139,19 +144,19 @@ export default function AdminPanel() {
 
   if (!user || loading) {
     return (
-                                  <div className="flex justify-center items-center min-h-screen bg-gray-100">
-                    <Card className="w-full max-w-md p-4 md:p-0 bg-transparent md:bg-white shadow-none md:shadow-lg border-none md:border">
-                        <CardContent className="flex flex-col items-center justify-center h-60">
-                            <div className="w-16 h-16 relative">
-                                <div className="w-16 h-16 border-4 border-t-primary border-r-primary border-b-primary border-l-primary border-solid rounded-full animate-spin"></div>
-                                <div className="w-16 h-16 border-4 border-t-transparent border-r-transparent border-b-transparent border-l-primary border-solid rounded-full animate-ping absolute top-0 left-0"></div>
-                            </div>
-                            <p className="text-lg mt-4 text-primary animate-pulse">
-                                Loading...
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <Card className="w-full max-w-md p-4 md:p-0 bg-transparent md:bg-white shadow-none md:shadow-lg border-none md:border">
+          <CardContent className="flex flex-col items-center justify-center h-60">
+            <div className="w-16 h-16 relative">
+              <div className="w-16 h-16 border-4 border-t-primary border-r-primary border-b-primary border-l-primary border-solid rounded-full animate-spin"></div>
+              <div className="w-16 h-16 border-4 border-t-transparent border-r-transparent border-b-transparent border-l-primary border-solid rounded-full animate-ping absolute top-0 left-0"></div>
+            </div>
+            <p className="text-lg mt-4 text-primary animate-pulse">
+              Loading...
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -172,7 +177,110 @@ export default function AdminPanel() {
           </div>
         </CardHeader>
         <CardContent>
-          <h2 className="text-xl font-semibold mb-4">CONCLAVE Participants</h2>
+          <h2 className="text-xl font-semibold mb-4">EARLY BIRD Participants</h2>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>S.No</TableHead>
+                  <TableHead>Ticket Number</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>College Name</TableHead>
+                  <TableHead>Transaction ID</TableHead>
+                  <TableHead>Payment Screenshot</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {earlyBird.map((participant, index) => (
+                  <TableRow key={participant.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{participant.ticketNumber}</TableCell>
+                    <TableCell className="font-medium">
+                      {participant.firstName} {participant.lastName}
+                    </TableCell>
+                    <TableCell>{participant.phoneNumber}</TableCell>
+                    <TableCell>{participant.college}</TableCell>
+                    <TableCell>{participant.transactionId}</TableCell>
+                    <TableCell>
+                      {participant.paymentScreenshotUrl && (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" className="p-0">
+                              <img
+                                src={participant.paymentScreenshotUrl}
+                                alt="Payment Screenshot"
+                                className="h-16 w-16 object-cover rounded cursor-pointer"
+                              />
+                              <Maximize2 className="h-4 w-4 absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-full p-1" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="w-96 max-w-full mx-auto my-8">
+                            <img
+                              src={participant.paymentScreenshotUrl}
+                              alt="Payment Screenshot"
+                              className="w-full h-auto"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          participant.status === "pending"
+                            ? "warning"
+                            : participant.status === "confirmed"
+                            ? "success"
+                            : "destructive"
+                        }
+                      >
+                        {participant.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleStatusChange(participant.id, "confirmed")
+                          }
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleStatusChange(participant.id, "pending")
+                          }
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setParticipantToDelete(participant);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <h2 className="text-xl font-semibold mt-8 mb-4">
+            CONCLAVE Participants
+          </h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -273,7 +381,9 @@ export default function AdminPanel() {
             </Table>
           </div>
 
-          <h2 className="text-xl font-semibold mt-8 mb-4">BOOTCAMP Participants</h2>
+          <h2 className="text-xl font-semibold mt-8 mb-4">
+            BOOTCAMP Participants
+          </h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -380,8 +490,8 @@ export default function AdminPanel() {
         <DialogContent>
           <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
           <p>
-            Are you sure you want to delete{" "}
-            {participantToDelete?.firstName} {participantToDelete?.lastName}?
+            Are you sure you want to delete {participantToDelete?.firstName}{" "}
+            {participantToDelete?.lastName}?
           </p>
           <div className="flex space-x-4 mt-4">
             <Button
