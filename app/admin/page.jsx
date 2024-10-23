@@ -39,6 +39,7 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [participantToDelete, setParticipantToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const db = getFirestore(app);
   const auth = getAuth(app);
 
@@ -56,22 +57,25 @@ export default function AdminPanel() {
 
   useEffect(() => {
     const fetchParticipants = async () => {
-        setLoading(true);
-        const querySnapshot = await getDocs(collection(db, "CORE"));
-        const data = querySnapshot.docs.map((doc) => {
-          const participantData = doc.data();
-          return {
-            ...participantData,
-            id: doc.id,
-            transactionId: participantData.transactionId.toString(), // Ensure transactionId is a string
-            ticketNumber: participantData.ticketNumber.toString(), // Ensure ticketNumber is a string
-            // Add more fields here if necessary
-          };
-        });
-        setParticipants(data);
-        setLoading(false);
-      };
-      
+      setLoading(true);
+      const querySnapshot = await getDocs(collection(db, "CORE"));
+      const data = querySnapshot.docs.map((doc) => {
+        const participantData = doc.data();
+        return {
+          ...participantData,
+          id: doc.id,
+          transactionId: participantData.transactionId.toString(), // Ensure transactionId is a string
+          ticketNumber: participantData.ticketNumber.toString(), // Ensure ticketNumber is a string
+        };
+      });
+
+      // Sort participants by ticket number in ascending order
+      data.sort((a, b) => a.ticketNumber.localeCompare(b.ticketNumber));
+
+      setParticipants(data);
+      setLoading(false);
+    };
+
     fetchParticipants();
   }, [db]);
 
@@ -84,6 +88,7 @@ export default function AdminPanel() {
   };
 
   const handleDelete = async () => {
+    setDeleting(true);
     if (participantToDelete) {
       const participantRef = doc(db, "CORE", participantToDelete.id);
       await deleteDoc(participantRef);
@@ -93,6 +98,7 @@ export default function AdminPanel() {
       setDeleteDialogOpen(false);
       setParticipantToDelete(null);
     }
+    setDeleting(false);
   };
 
   const handleLogout = () => {
@@ -114,15 +120,22 @@ export default function AdminPanel() {
       ieeeMember: participant.ieeeMember,
       rasMember: participant.rasMember,
       referralCode: participant.referralCode,
-      transactionId: participant.transactionId.toString().padStart(12, "0"), // Pad with zeros
+      transactionId: participant.transactionId.toString().padStart(12, "0"), 
       paymentUrl: participant.paymentScreenshotUrl,
     }));
-    console.log(exportData);
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Participants");
     XLSX.writeFile(workbook, "participants.xlsx");
   };
+
+  const conclaveParticipants = participants.filter((p) =>
+    p.ticketNumber.startsWith("10")
+  );
+
+  const bootcampParticipants = participants.filter((p) =>
+    p.ticketNumber.startsWith("20")
+  );
 
   if (!user || loading) {
     return (
@@ -159,6 +172,7 @@ export default function AdminPanel() {
           </div>
         </CardHeader>
         <CardContent>
+          <h2 className="text-xl font-semibold mb-4">CONCLAVE Participants</h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -175,7 +189,7 @@ export default function AdminPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {participants.map((participant, index) => (
+                {conclaveParticipants.map((participant, index) => (
                   <TableRow key={participant.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{participant.ticketNumber}</TableCell>
@@ -236,10 +250,102 @@ export default function AdminPanel() {
                           size="sm"
                           variant="outline"
                           onClick={() =>
-                            handleStatusChange(participant.id, "rejected")
+                            handleStatusChange(participant.id, "pending")
                           }
                         >
                           <X className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setParticipantToDelete(participant);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <h2 className="text-xl font-semibold mt-8 mb-4">BOOTCAMP Participants</h2>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>S.No</TableHead>
+                  <TableHead>Ticket Number</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>College Name</TableHead>
+                  <TableHead>Transaction ID</TableHead>
+                  <TableHead>Payment Screenshot</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bootcampParticipants.map((participant, index) => (
+                  <TableRow key={participant.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{participant.ticketNumber}</TableCell>
+                    <TableCell className="font-medium">
+                      {participant.firstName} {participant.lastName}
+                    </TableCell>
+                    <TableCell>{participant.phoneNumber}</TableCell>
+                    <TableCell>{participant.college}</TableCell>
+                    <TableCell>{participant.transactionId}</TableCell>
+                    <TableCell>
+                      {participant.paymentScreenshotUrl && (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" className="p-0">
+                              <img
+                                src={participant.paymentScreenshotUrl}
+                                alt="Payment Screenshot"
+                                className="h-16 w-16 object-cover rounded cursor-pointer"
+                              />
+                              <Maximize2 className="h-4 w-4 absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-full p-1" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="w-96 max-w-full mx-auto my-8">
+                            <img
+                              src={participant.paymentScreenshotUrl}
+                              alt="Payment Screenshot"
+                              className="w-full h-auto"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          participant.status === "pending"
+                            ? "warning"
+                            : participant.status === "confirmed"
+                            ? "success"
+                            : "destructive"
+                        }
+                      >
+                        {participant.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleStatusChange(participant.id, "confirmed")
+                          }
+                        >
+                          <Check className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
@@ -248,11 +354,11 @@ export default function AdminPanel() {
                             handleStatusChange(participant.id, "pending")
                           }
                         >
-                          <Clock className="h-4 w-4" />
+                          <X className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
-                          variant="destructive"
+                          variant="outline"
                           onClick={() => {
                             setParticipantToDelete(participant);
                             setDeleteDialogOpen(true);
@@ -270,28 +376,32 @@ export default function AdminPanel() {
         </CardContent>
       </Card>
 
-      {/* Confirmation Dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="max-w-md">
-          <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-          {participantToDelete && (
-            <p>
-              Are you sure you want to delete {participantToDelete.firstName}?
-            </p>
-          )}
-          <div className="flex justify-end mt-4">
+        <DialogContent>
+          <h2 className="text-lg font-semibold mb-4">Confirm Deletion</h2>
+          <p>
+            Are you sure you want to delete{" "}
+            {participantToDelete?.firstName} {participantToDelete?.lastName}?
+          </p>
+          <div className="flex space-x-4 mt-4">
             <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(false)}
+              onClick={handleDelete}
+              variant="destructive"
+              disabled={deleting}
             >
-              Cancel
+              {deleting ? (
+                <>
+                  <Clock className="mr-2 h-4 w-4 animate-spin" /> Deleting...
+                </>
+              ) : (
+                "Delete"
+              )}
             </Button>
             <Button
-              variant="destructive"
-              className="ml-2"
-              onClick={handleDelete}
+              onClick={() => setDeleteDialogOpen(false)}
+              variant="outline"
             >
-              Delete
+              Cancel
             </Button>
           </div>
         </DialogContent>
