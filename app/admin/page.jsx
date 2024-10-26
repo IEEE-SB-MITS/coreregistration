@@ -129,14 +129,13 @@ export default function AdminPanel() {
     XLSX.writeFile(workbook, "participants.xlsx");
   };
 
-  const earlyBird = participants.filter((p) =>
-    p.ticketNumber.startsWith("10") && !p.ticketNumber.startsWith("1002")
-);
+  const earlyBird = participants.filter(
+    (p) => p.ticketNumber.startsWith("10") && !p.ticketNumber.startsWith("1002")
+  );
 
   const conclaveParticipants = participants.filter((p) =>
     p.ticketNumber.startsWith("1002")
   );
-
 
   const bootcampParticipants = participants.filter((p) =>
     p.ticketNumber.startsWith("20")
@@ -177,7 +176,9 @@ export default function AdminPanel() {
           </div>
         </CardHeader>
         <CardContent>
-          <h2 className="text-xl font-semibold mb-4">EARLY BIRD Participants</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            EARLY BIRD Participants
+          </h2>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -236,8 +237,15 @@ export default function AdminPanel() {
                             ? "success"
                             : "destructive"
                         }
+                        className={
+                          participant.status === "pending"
+                            ? "bg-yellow-500 text-black"
+                            : participant.status === "confirmed"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }
                       >
-                        {participant.status}
+                        {participant.status.toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -339,8 +347,15 @@ export default function AdminPanel() {
                             ? "success"
                             : "destructive"
                         }
+                        className={
+                          participant.status === "pending"
+                            ? "bg-yellow-500 text-black"
+                            : participant.status === "confirmed"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }
                       >
-                        {participant.status}
+                        {participant.status.toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -442,8 +457,15 @@ export default function AdminPanel() {
                             ? "success"
                             : "destructive"
                         }
+                        className={
+                          participant.status === "pending"
+                            ? "bg-yellow-500 text-black"
+                            : participant.status === "confirmed"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }
                       >
-                        {participant.status}
+                        {participant.status.toUpperCase()}
                       </Badge>
                     </TableCell>
                     <TableCell>
