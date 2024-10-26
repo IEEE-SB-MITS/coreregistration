@@ -25,7 +25,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
             { label: "SEMESTER AND BRANCH", value: `${userData.semester} ${userData.branch}` },
             { label: "FOOD PREFERENCE", value: userData.veg },
             { label: "VENUE", value: "MITS, KOCHI" },
-            { label: "DATE AND TIME", value: "20th October 2021, 10:00 AM" },
+            { label: "DATE AND TIME", value: "30th October 2024, 08:30 AM" },
           ].map(({ label, value }, index) => (
             <React.Fragment key={label}>
               <div className="text-md pb-1 flex text-bold justify-center md:justify-end">
