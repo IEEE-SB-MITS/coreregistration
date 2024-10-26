@@ -286,7 +286,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
                 {/* <option value="Workshop3">Workshop 3</option> */}
             </select>
         </label>
-        <label className='block md:col-span-1 col-span-2'>
+        {/* <label className='block md:col-span-1 col-span-2'>
             <span class=" after:ml-0.5 block text-sm pl-4 py-1">
             Coupon Code
             </span>
@@ -301,7 +301,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
                 value={formData.specialRequirements || ""}
                 className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none  required"
             />
-        </label>
+        </label> */}
         <label className="after:content-['*'] after:ml-0.5 after:text-red-700">Do you requrie Hostel</label>
         <div className="flex space-x-6">
             <label className="flex items-center space-x-2">

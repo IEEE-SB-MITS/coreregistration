@@ -15,6 +15,7 @@ const initialFormData = {
   ieeeMember: false,
   ieeeMembershipId: "",
   rasMember: false,
+  hostler: false,
   college: "",
   branch: "",
   semester: "",
@@ -203,6 +204,7 @@ const Register = () => {
               ieeeMember: false,
               ieeeMembershipId: "",
               rasMember: false,
+              hostler: false,
               college: "",
               branch: "",
               semester: "",
@@ -413,7 +415,6 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none required"
       />
     </label>
-
     <label className="block md:col-span-1 col-span-2">
       <span className="block text-sm pl-4 py-1">
         Referral Code (Optional)
@@ -425,6 +426,37 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
         value={formData.referralCode}
         className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none "
       />
+    </label>
+
+
+    <label className="block md:col-span-1 col-span-2">
+      <span className="block text-sm pl-4 py-1">
+      Do you requrie Hostel
+      </span>
+      <div className="flex space-x-6">
+            <label className="flex items-center space-x-2">
+                <input
+                    type="radio"
+                    name="hostler"
+                    value="true"
+                    checked={formData.hostler}
+                    onChange={handleChange}
+                    className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+                />
+                <span className="text-white text-sm font-medium">Yes</span>
+            </label>
+            <label className="flex items-center space-x-2">
+                <input
+                    type="radio"
+                    name="hostler"
+                    value="false"
+                    checked={!formData.hostler}
+                    onChange={handleChange}
+                    className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+                />
+                <span className="text-white text-sm font-medium">No</span>
+            </label>
+        </div>
     </label>
 
 
