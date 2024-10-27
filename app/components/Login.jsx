@@ -39,7 +39,7 @@ const Login = () => {
           <label className='text-sm pl-4 py-1'>Ticket Number</label>
           <input 
             type="text" 
-            className="input h-10 input-bordered border-2 px-4 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-full w-full" 
+            className="input h-10 input-bordered border-2 px-4 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-md w-full" 
             value={ticketNumber}
             onChange={(e) => setTicketNumber(e.target.value)}
             placeholder="Enter ticket number"
@@ -49,7 +49,7 @@ const Login = () => {
           <label className='text-sm pl-4 py-1'>Email</label>
           <input 
             type="email" 
-            className="input h-10 input-bordered border-2 px-4 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-full w-full" 
+            className="input h-10 input-bordered border-2 px-4 border-[#E3E3E3] bg-[#57595d] placeholder:text-gray-300 rounded-md w-full" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
@@ -58,7 +58,7 @@ const Login = () => {
       </div>
 
       <button
-        className="btn btn-sm h-9 w-44 rounded-full text-xs text-white border border-[#505459]"
+        className="btn btn-sm h-9 w-44 rounded-md text-xs text-white border border-[#505459]"
         style={{
           background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
         }}

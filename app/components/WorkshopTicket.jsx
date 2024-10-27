@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 
 const WorkshopTicket = ({ userData, handleDownload }) => {
   return (
-    <div className="w-5/6 h-full lg:w-3/5 text-black uppercase flex flex-col justify-center items-center py-10 md:py-0">
+    <div className="w-5/6 h-full lg:w-3/5 text-black uppercase  pb-16 md:pb-0  flex flex-col justify-center items-center py-10 md:py-0">
       <div className="w-full h-1/5 bg-white rounded-xl">
         <div className="flex justify-between flex-col items-center px-5 py-2 h-full">
           <div className="flex justify-between items-center w-full h-full">
@@ -25,7 +25,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
             { label: "SEMESTER AND BRANCH", value: `${userData.semester} ${userData.branch}` },
             { label: "FOOD PREFERENCE", value: userData.veg },
             { label: "VENUE", value: "MITS, KOCHI" },
-            { label: "DATE AND TIME", value: "20th October 2021, 10:00 AM" },
+            { label: "DATE AND TIME", value: "30th October 2024, 08:30 AM" },
           ].map(({ label, value }) => (
             <React.Fragment key={label}>
               <div className="text-md pb-1 flex justify-center md:justify-end">
@@ -36,7 +36,7 @@ const WorkshopTicket = ({ userData, handleDownload }) => {
           ))}
         </div>
       </div>
-      <div className={`w-full h-1/5 rounded-t-xl ${userData.status === "pending" ? "bg-yellow-500" : userData.status === "confirmed" ? "bg-green-500" : "bg-black"}`}>
+      <div className={`w-full h-1/5  pb-16 md:pb-0  rounded-t-xl ${userData.status === "pending" ? "bg-yellow-500" : userData.status === "confirmed" ? "bg-green-500" : "bg-black"}`}>
         <div className="flex justify-center items-center text-xl md:text-2xl px-5 py-2 w-full h-full">
           <div className="text-center py-2 rounded-lg text-white">
             <p className="font-bold">

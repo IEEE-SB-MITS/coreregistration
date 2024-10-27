@@ -1,70 +1,92 @@
-"use client";
-import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app } from "../../../utils/config";
+'use client'
+
+import React, { useState } from "react"
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
+import { app } from "../../../utils/config"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { EyeIcon, EyeOffIcon } from "lucide-react"
+import { toast, Toaster } from "react-hot-toast"  // Updated imports
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const auth = getAuth(app);
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const auth = getAuth(app)
 
-    // Handle login
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError("");
+        setIsLoading(true);
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "/admin"; // Redirect to the admin page after successful login
+            window.location.href = "/admin";
         } catch (err) {
-            setError("Invalid login credentials. Please try again.");
+            toast.error("Invalid login credentials. Please try again."); // Updated toast
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <div className="w-full max-w-md">
-                <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
-                <form onSubmit={handleLogin} className="bg-white  rounded px-8 pt-6 pb-8 mb-4">
-                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            required
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            required
-                        />
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Sign In
-                        </button>
-                    </div>
+        <div className="flex justify-center items-center min-h-screen md:bg-gray-100 bg-white">
+            <Card className="w-full max-w-md ">
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-2xl font-bold text-center">Admin Login</CardTitle>
+                    <CardDescription className="text-center">
+                    </CardDescription>
+                </CardHeader>
+                <form onSubmit={handleLogin}>
+                    <CardContent className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="admin@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? (
+                                        <EyeOffIcon className="h-4 w-4" />
+                                    ) : (
+                                        <EyeIcon className="h-4 w-4" />
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button className="w-full" type="submit" disabled={isLoading}>
+                            {isLoading ? "Signing In..." : "Sign In"}
+                        </Button>
+                    </CardFooter>
                 </form>
-            </div>
+            </Card>
+            <Toaster /> {/* Updated toaster */}
         </div>
-    );
-};
+    )
+}
 
-export default Login;
+export default Login

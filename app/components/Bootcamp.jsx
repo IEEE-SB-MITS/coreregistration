@@ -286,7 +286,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
                 {/* <option value="Workshop3">Workshop 3</option> */}
             </select>
         </label>
-        <label className='block md:col-span-1 col-span-2'>
+        {/* <label className='block md:col-span-1 col-span-2'>
             <span class=" after:ml-0.5 block text-sm pl-4 py-1">
             Coupon Code
             </span>
@@ -301,7 +301,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
                 value={formData.specialRequirements || ""}
                 className="pl-3 w-full input h-9 input-bordered border-2 border-[#E3E3E3] bg-[#57595d] rounded-md focus:outline-none  required"
             />
-        </label>
+        </label> */}
         <label className="after:content-['*'] after:ml-0.5 after:text-red-700">Do you requrie Hostel</label>
         <div className="flex space-x-6">
             <label className="flex items-center space-x-2">
@@ -333,7 +333,7 @@ const PartThreeForm = ({ formData, handleChange, handleSubmit }) => (
             <button type="submit" className="btn btn-sm h-9 w-44 col-span-2 rounded-md text-white border border-[#505459] justify-self-center mt-3"
                 style={{
                     background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
-                }}>Next</button>
+                }}>PAY NOW</button>
         </div>
     </form>
 );
@@ -528,14 +528,91 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
             style={{
                 background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
             }}>
-            PAY NOW
+           NEXT
         </button>
     </form>
 );
 
+const isEmailValid = (email) => {
+    const regex = /^24.*@mgits\.ac\.in$/;
+    return regex.test(email);
+  };
+
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
-    <form onSubmit={handleSubmit} className="flex flex-col m-5  items-center justify-center  px-5 md:px-0">
-        <h2 className="text-xl font-bold mb-4">Amount To Pay : ₹ {amount}</h2>
+    <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center  px-5 md:px-0">
+       
+       <div className="flex justify-center items-center ">
+       {formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
+  <button
+    disabled
+    className="group/button relative inline-flex items-center m-5 justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+  >
+    <span className="text-xs m-3">
+      IEEE Members
+      <br />
+      1199
+    </span>
+    <div
+      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+    >
+      <div className="relative h-full w-10 bg-white/20"></div>
+    </div>
+  </button>
+)}
+{formData.ieeeMember && formData.rasMember && !isEmailValid(formData.email) &&(
+  <button
+    disabled
+    className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+  >
+    <span className="text-xs m-3">
+      RAS Members
+      <br />
+      999
+    </span>
+    <div
+      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+    >
+      <div className="relative h-full w-10 bg-white/20"></div>
+    </div>
+  </button>
+)}
+{!formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
+  <button
+    disabled
+    className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+  >
+    <span className="text-xs m-3">
+      Non-IEEE Members
+      <br />
+      1399
+    </span>
+    <div
+      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+    >
+      <div className="relative h-full w-10 bg-white/20"></div>
+    </div>
+  </button>
+
+)}
+{isEmailValid(formData.email) && (
+        <button
+          disabled
+          className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+        >
+          <span className="text-md m-3">
+            MITS 1st Year Only
+            <br />
+            999
+          </span>
+          <div
+            className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+          >
+            <div className="relative h-full w-10 bg-white/20"></div>
+          </div>
+        </button>
+      )}
+
+  </div>
 
         <Image src={Qr} alt="QR" width={180} height={180} />
         <span className="text-white text-sm">Scan the QR code to make payment</span>
