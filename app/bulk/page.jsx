@@ -103,7 +103,7 @@ const BulkReg = () => {
               name="name"
               value={teamLead.name}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
             />
           </div>
           <div className="mb-4">
@@ -113,7 +113,7 @@ const BulkReg = () => {
               name="email"
               value={teamLead.email}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -124,7 +124,7 @@ const BulkReg = () => {
               name="phone"
               value={teamLead.phone}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -135,7 +135,7 @@ const BulkReg = () => {
               name="branch"
               value={teamLead.branch}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -146,7 +146,7 @@ const BulkReg = () => {
               name="college"
               value={teamLead.college}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -157,7 +157,7 @@ const BulkReg = () => {
               name="semester"
               value={teamLead.semester}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -166,7 +166,7 @@ const BulkReg = () => {
           {/* Team Member Input Fields */}
           {teamMembers.map((member, index) => (
             <div key={index} className="mt-4">
-              <h3 className="text-lg font-semibold mb-2">Team Member {index + 1}</h3>
+              <h3 className="text-lg font-semibold mb-2 underline underline-offset-4 text-center">Team Member {index + 1}</h3>
               <div className="mb-2">
                 <label className="block text-white/50">First Name:</label>
                 <input
@@ -174,7 +174,7 @@ const BulkReg = () => {
                   name="firstName"
                   value={member.firstName}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
                   required
                 />
               </div>
@@ -185,7 +185,7 @@ const BulkReg = () => {
                   name="lastName"
                   value={member.lastName}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
                   required
                 />
               </div>
@@ -196,7 +196,7 @@ const BulkReg = () => {
                   name="branch"
                   value={member.branch}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
                   required
                 />
               </div>
@@ -207,7 +207,7 @@ const BulkReg = () => {
                   name="college"
                   value={member.college}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
                   required
                 />
               </div>
@@ -218,17 +218,19 @@ const BulkReg = () => {
                   name="semester"
                   value={member.semester}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
                   required
                 />
               </div>
             </div>
           ))}
+          <div className='flex flex-col items-center gap-4 w-full'>
+          <h1 className='text-2xl underline underline-offset-4'>Payment</h1>
           <Image src={Qr} alt="QR" width={180} height={180} className='flex items-center justify-center' />
     <span className="text-white text-sm">Scan the QR code to make payment</span>
     <span>OR</span>
     <span>UPI ID : Q966258565@ybl</span>
-          <div className="mt-4 text-lg text-center font-semibold text-red-800">
+          <div className="mt-4 text-lg text-center font-extrabold text-red-800">
             Total Amount to Pay: ₹{totalAmount}
           </div>
           <div className="mb-4">
@@ -238,7 +240,7 @@ const BulkReg = () => {
               name="transactionId"
               value={teamLead.transactionId}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
               required
             />
           </div>
@@ -249,10 +251,12 @@ const BulkReg = () => {
               name="paymentScreenshot"
               accept="image/*"
               onChange={handleScreenshotChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md font-bold text-black/75"
               required
             />
+          </div>  
           </div>
+          
           <div className='w-full flex flex-col  justify-center items-center'>
           <button
             type="submit"
