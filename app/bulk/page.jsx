@@ -1,10 +1,15 @@
 "use client";
 import React, { useState } from 'react';
-import db from "../../utils/config"; // Make sure to import your initialized Firestore
+import db from "../../utils/config"; // Ensure Firebase is initialized here
 import { collection, addDoc } from 'firebase/firestore';
-
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Image from "next/image";
+import Qr from '../../public/qr.png';
 const BulkReg = () => {
-  const [totalAmount, setTotalAmount] = useState(5000); // Default total amount
+  const storage = getStorage(); // Initialize Firebase Storage
+  const [totalAmount, setTotalAmount] = useState(5000);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission status
+
   const [teamMembers, setTeamMembers] = useState([
     { firstName: '', lastName: '', branch: '', college: '', semester: '' },
     { firstName: '', lastName: '', branch: '', college: '', semester: '' },
@@ -19,8 +24,10 @@ const BulkReg = () => {
     phone: '',
     branch: '',
     college: '',
-    semester: ''
+    semester: '',
+    transactionId: '',
   });
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null); // To hold the screenshot file
 
   const handleInputChange = (event, index) => {
     const { name, value } = event.target;
@@ -34,31 +41,60 @@ const BulkReg = () => {
     setTeamLead((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleScreenshotChange = (event) => {
+    setPaymentScreenshot(event.target.files[0]); // Store the uploaded file
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Add team lead info
-      await addDoc(collection(db, 'bulkReg'), { teamLead });
+      let screenshotUrl = null;
 
-      // Add each team member's info
-      for (const member of teamMembers) {
-        await addDoc(collection(db, 'bulkReg'), member);
+      // Upload screenshot to Firebase Storage if available
+      if (paymentScreenshot) {
+        const screenshotRef = ref(storage, `upiscreenshots/${Date.now()}_${paymentScreenshot.name}`);
+        await uploadBytes(screenshotRef, paymentScreenshot);
+        screenshotUrl = await getDownloadURL(screenshotRef); // Retrieve the screenshot URL
       }
 
-      alert('Data submitted successfully!');
-      // Reset the form or handle post-submit actions as needed
+      // Prepare data to save in Firestore
+      const teamData = {
+        teamLead: teamLead,
+        teamMembers: teamMembers,
+        totalAmount: totalAmount,
+        membershipConfirmed: membershipConfirmed,
+        transactionId: teamLead.transactionId,
+        screenshotUrl: screenshotUrl, // URL for the payment screenshot
+      };
+
+      // Save all data as a single document in the 'bulkReg' collection
+      await addDoc(collection(db, 'bulkReg'), teamData);
+      window.location.href = "https://forms.google.com/yourformlink";
+
+      setIsSubmitted(true); 
+    
+      // Optionally reset the form or handle post-submit actions
     } catch (error) {
       console.error('Error submitting data:', error);
       alert('Error submitting data. Please try again.');
     }
   };
-
+  
   return (
-    <div className="bg-neutral-900 quicksand-600 flex items-center justify-center min-h-screen min-w-screen">
-      <div className="bg-white/10 backdrop-blur text-white p-8 rounded shadow-md w-1/2 my-32">
+    <div className="flex items-center justify-centermin-h-screen bg-neutral-900 text-white">
+      {isSubmitted ? (
+        <div className="p-8 rounded-md shadow-md  w-screen h-screen text-center">
+          <h2 className="text-2xl font-bold mb-4">Registration Successful!</h2>
+          <p className="text-lg">One more Step to complete the process.</p>
+          <p className="mt-4 text-6sm">
+            Please also complete <a href="https://forms.google.com/yourformlink" className="underline text-white">this additional Google Form</a>.
+          </p>
+        </div>
+      ) : (
+    <div className="bg-neutral-900 quicksand-600 flex items-center text-black justify-center min-h-screen w-screen">
+      <div className="bg-white/10 backdrop-blur text-white p-8 rounded shadow-md w-full md:w-1/2 my-32">
         <h2 className="text-2xl font-bold mb-6 text-center">Bulk Registration</h2>
 
-        {/* Team Lead Info */}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-white/50 font-semibold mb-2">Team Lead Name:</label>
@@ -67,7 +103,7 @@ const BulkReg = () => {
               name="name"
               value={teamLead.name}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
             />
           </div>
           <div className="mb-4">
@@ -77,7 +113,7 @@ const BulkReg = () => {
               name="email"
               value={teamLead.email}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               required
             />
           </div>
@@ -88,7 +124,7 @@ const BulkReg = () => {
               name="phone"
               value={teamLead.phone}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               required
             />
           </div>
@@ -99,7 +135,7 @@ const BulkReg = () => {
               name="branch"
               value={teamLead.branch}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               required
             />
           </div>
@@ -110,7 +146,7 @@ const BulkReg = () => {
               name="college"
               value={teamLead.college}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               required
             />
           </div>
@@ -121,12 +157,13 @@ const BulkReg = () => {
               name="semester"
               value={teamLead.semester}
               onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
               required
             />
           </div>
+         
 
-          {/* Team Member Inputs */}
+          {/* Team Member Input Fields */}
           {teamMembers.map((member, index) => (
             <div key={index} className="mt-4">
               <h3 className="text-lg font-semibold mb-2">Team Member {index + 1}</h3>
@@ -137,7 +174,7 @@ const BulkReg = () => {
                   name="firstName"
                   value={member.firstName}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
                   required
                 />
               </div>
@@ -148,7 +185,7 @@ const BulkReg = () => {
                   name="lastName"
                   value={member.lastName}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
                   required
                 />
               </div>
@@ -159,7 +196,7 @@ const BulkReg = () => {
                   name="branch"
                   value={member.branch}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
                   required
                 />
               </div>
@@ -170,7 +207,7 @@ const BulkReg = () => {
                   name="college"
                   value={member.college}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
                   required
                 />
               </div>
@@ -181,28 +218,52 @@ const BulkReg = () => {
                   name="semester"
                   value={member.semester}
                   onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
                   required
                 />
               </div>
             </div>
           ))}
-
-          {/* Total Amount Display */}
-            <div className="mt-4 text-lg text-center font-semibold text-gray-800">
-              Total Amount to Pay: ₹{totalAmount}
-            </div>
-
-          {/* Submit Button */}
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
-            >
-              Submit
-            </button>
+          <Image src={Qr} alt="QR" width={180} height={180} className='flex items-center justify-center' />
+    <span className="text-white text-sm">Scan the QR code to make payment</span>
+    <span>OR</span>
+    <span>UPI ID : Q966258565@ybl</span>
+          <div className="mt-4 text-lg text-center font-semibold text-red-800">
+            Total Amount to Pay: ₹{totalAmount}
+          </div>
+          <div className="mb-4">
+            <label className="block text-white/50 font-semibold mb-2">Transaction ID:</label>
+            <input
+              type="text"
+              name="transactionId"
+              value={teamLead.transactionId}
+              onChange={handleTeamLeadChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-white/50 font-semibold mb-2">Payment Screenshot:</label>
+            <input
+              type="file"
+              name="paymentScreenshot"
+              accept="image/*"
+              onChange={handleScreenshotChange}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
+          >
+            Submit
+          </button>
         </form>
       </div>
     </div>
+  )}
+  </div>
   );
 };
 
