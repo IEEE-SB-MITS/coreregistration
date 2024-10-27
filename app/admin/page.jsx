@@ -132,14 +132,19 @@ export default function AdminPanel() {
   const earlyBird = participants.filter(
     (p) => p.ticketNumber.startsWith("10") && !p.ticketNumber.startsWith("1002")
   );
+  const earlyBirdCount = earlyBird.length;
 
   const conclaveParticipants = participants.filter((p) =>
     p.ticketNumber.startsWith("1002")
   );
+  const conclaveParticipantsCount = conclaveParticipants.length;
 
   const bootcampParticipants = participants.filter((p) =>
     p.ticketNumber.startsWith("20")
   );
+  const bootcampParticipantsCount = bootcampParticipants.length;
+
+  const totalParticipants = earlyBirdCount + conclaveParticipantsCount + bootcampParticipantsCount;
 
   if (!user || loading) {
     return (
@@ -163,7 +168,10 @@ export default function AdminPanel() {
     <div className="container mx-auto p-4 space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
+          <div>
           <CardTitle className="text-2xl font-bold">Admin Panel</CardTitle>
+          <h2 className="text-lg font-semibold">Total Participants :- {totalParticipants}</h2>
+          </div>
           <div className="space-x-2 space-y-2 flex flex-col md:flex-row">
             <Button onClick={handleExport} variant="outline">
               <FileSpreadsheet className="mr-2 h-4 w-4" />
