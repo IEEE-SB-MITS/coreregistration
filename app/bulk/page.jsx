@@ -15,7 +15,7 @@ const BulkReg = () => {
     { firstName: '', lastName: '', branch: '', college: '', semester: '' },
     { firstName: '', lastName: '', branch: '', college: '', semester: '' },
     { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+
   ]);
   const [membershipConfirmed, setMembershipConfirmed] = useState(false);
   const [teamLead, setTeamLead] = useState({
