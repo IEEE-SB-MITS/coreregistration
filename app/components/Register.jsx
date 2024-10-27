@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
@@ -24,6 +24,7 @@ const initialFormData = {
   referralCode: "",
   status: "pending",
 };
+;
 
 const Register = () => {
   const [formData, setFormData] = useState(initialFormData);
@@ -31,6 +32,7 @@ const Register = () => {
   const [partTwo, setPartTwo] = useState(false);
   const storage = getStorage();
   const [amount, setAmount] = useState(0);
+  const [isRegistrationClosed, setIsRegistrationClosed] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -56,7 +58,7 @@ const Register = () => {
   const validatePartOne = () => {
     const requiredFields = ['firstName', 'lastName', 'email', 'phoneNumber', 'college', 'branch', 'semester'];
     const missingFields = requiredFields.filter(field => !formData[field]);
-    
+
     if (missingFields.length > 0) {
       toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`);
       return false;
@@ -78,7 +80,7 @@ const Register = () => {
       toast.error("Enter a valid email address.");
       return false;
     }
-    
+
     return true;
   };
 
@@ -107,20 +109,35 @@ const Register = () => {
       );
     });
   };
-
+ 
   const getNextTicketNumber = async () => {
-    const ticketDocRef = doc(db, "tickets", "currentTicket");
-    const ticketDoc = await getDoc(ticketDocRef);
+    try {
+      const ticketDocRef = doc(db, "tickets", "currentTicket");
+      const ticketDoc = await getDoc(ticketDocRef);
 
-    if (!ticketDoc.exists()) {
-      throw new Error("Ticket document does not exist!");
+      if (!ticketDoc.exists()) {
+        throw new Error("Ticket document does not exist!");
+      }
+
+      const currentTicket = ticketDoc.data().ticketNumber;
+      const nextTicket = currentTicket + 1;
+
+      if (nextTicket > 100255) {
+        setLoading(false);
+        setIsRegistrationClosed(true); // Display "Registration Closed" message
+        return;
+      }
+
+      return nextTicket;
+    } catch (error) {
+      console.error("Error fetching ticket number:", error);
     }
-
-    const currentTicketNumber = ticketDoc.data().ticketNumber;
-    await updateDoc(ticketDocRef, { ticketNumber: currentTicketNumber + 1 });
-
-    return currentTicketNumber;
   };
+
+  // Use useEffect to run on component mount
+  useEffect(() => {
+    getNextTicketNumber();
+  }, []);
 
   const saveRegistrationData = async (screenshotUrl, ticketNumber) => {
     const userId = uuidv4();
@@ -131,125 +148,131 @@ const Register = () => {
     });
   };
 
-      const handleSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-    
-      try {
-        if (!formData.transactionId || !formData.paymentScreenshot) {
-          setLoading(false);
-          return toast.error(
-            "Please provide transaction ID and upload payment screenshot"
-          );
-        }
-    
-        const paymentScreenshotId = `${formData.transactionId}-${uuidv4()}`;
-        const screenshotRef = ref(storage, `screenshots/${paymentScreenshotId}`);
-    
-        const uploadTask = uploadBytesResumable(
-          screenshotRef,
-          formData.paymentScreenshot
-        );
-    
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-          },
-          (error) => {
-            console.error(error);
-            setLoading(false);
-            toast.error("File upload failed");
-          },
-          async () => {
-            const screenshotUrl = await getDownloadURL(uploadTask.snapshot.ref);
-    
-            // Remove the paymentScreenshot field from formData
-            const { paymentScreenshot, ...formDataWithoutFile } = formData;
-    
-            // Ticketing logic
-            const ticketDocRef = doc(db, "tickets", "currentTicket");
-            const ticketDoc = await getDoc(ticketDocRef);
-    
-            if (!ticketDoc.exists()) {
-              throw new Error("Ticket document does not exist!");
-            }
-    
-            const currentTicket = ticketDoc.data().ticketNumber;
-            const nextTicket = currentTicket + 1;
-    
-            // Update ticket number in Firestore
-            await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
-    
-            // Generate a unique userId
-            const userId = uuidv4();
-    
-            // Save registration data in the CORE collection
-            const docRef = await setDoc(doc(db, "CORE", userId), {
-              ...formDataWithoutFile,
-              paymentScreenshotUrl: screenshotUrl, // Store the URL here
-              ticketNumber: currentTicket,
-            });
-            const email = formData.email;
-            setLoading(false);
-            toast.success("Registration successful");
-            setFormData({
-              firstName: "",
-              lastName: "",
-              email: "",
-              phoneNumber: "",
-              veg: "Veg",
-              ieeeMember: false,
-              ieeeMembershipId: "",
-              rasMember: false,
-              hostler: false,
-              college: "",
-              branch: "",
-              semester: "",
-              transactionId: "",
-              paymentScreenshot: null,
-              referralCode: "",
-            });
-            
-            // Redirect to ticket page
-            window.location.href = `/ticket?ticketNumber=${currentTicket}&email=${email}`;
-          }
-        );
-      } catch (error) {
-        console.error("Error saving document:", error);
-        setLoading(false);
-        toast.error("Registration failed");
-      }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
+    try {
+      if (!formData.transactionId || !formData.paymentScreenshot) {
+        setLoading(false);
+        return toast.error(
+          "Please provide transaction ID and upload payment screenshot"
+        );
+      }
+
+      const paymentScreenshotId = `${formData.transactionId}-${uuidv4()}`;
+      const screenshotRef = ref(storage, `screenshots/${paymentScreenshotId}`);
+
+      const uploadTask = uploadBytesResumable(
+        screenshotRef,
+        formData.paymentScreenshot
+      );
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error(error);
+          setLoading(false);
+          toast.error("File upload failed");
+        },
+        async () => {
+          const screenshotUrl = await getDownloadURL(uploadTask.snapshot.ref);
+
+          // Remove the paymentScreenshot field from formData
+          const { paymentScreenshot, ...formDataWithoutFile } = formData;
+
+          // Ticketing logic
+          const ticketDocRef = doc(db, "tickets", "currentTicket");
+          const ticketDoc = await getDoc(ticketDocRef);
+
+          if (!ticketDoc.exists()) {
+            throw new Error("Ticket document does not exist!");
+          }
+
+          const currentTicket = ticketDoc.data().ticketNumber;
+          const nextTicket = currentTicket + 1;
+
+          // Update ticket number in Firestore
+          await updateDoc(ticketDocRef, { ticketNumber: nextTicket });
+
+       
+
+          // Generate a unique userId
+          const userId = uuidv4();
+
+          // Save registration data in the CORE collection
+          const docRef = await setDoc(doc(db, "CORE", userId), {
+            ...formDataWithoutFile,
+            paymentScreenshotUrl: screenshotUrl, // Store the URL here
+            ticketNumber: currentTicket,
+          });
+          const email = formData.email;
+          setLoading(false);
+          toast.success("Registration successful");
+          setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phoneNumber: "",
+            veg: "Veg",
+            ieeeMember: false,
+            ieeeMembershipId: "",
+            rasMember: false,
+            hostler: false,
+            college: "",
+            branch: "",
+            semester: "",
+            transactionId: "",
+            paymentScreenshot: null,
+            referralCode: "",
+          });
+
+          // Redirect to ticket page
+          window.location.href = `/ticket?ticketNumber=${currentTicket}&email=${email}`;
+        }
+      );
+    } catch (error) {
+      console.error("Error saving document:", error);
+      setLoading(false);
+      toast.error("Registration failed");
+    }
+  };
   return (
-    <div className="register-form  h-fit p-4 pt-0 w-full">
-      {!partTwo ? (
-        <PartOneForm
-          formData={formData}
-          handleChange={handleChange}
-          handleSubmit={handleSubmitPartOne}
-        />
+    <div className="register-form h-fit p-4 pt-0 w-full">
+      {isRegistrationClosed ? (
+        <RegistrationClosed />
       ) : (
-        <PartTwoForm
-          formData={formData}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          loading={loading}
-          amount={amount}
-        />
+        !partTwo ? (
+          <PartOneForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmitPartOne}
+          />
+        ) : (
+          <PartTwoForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            loading={loading}
+            amount={amount}
+          />
+        )
       )}
     </div>
   );
+
 };
 
 const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
   <form onSubmit={handleSubmit} className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 px-5 md:px-0">
     <div className="text-2xl font-semibold text-[#FFFFFFD9] col-span-2 -mb-2">Student Details</div>
     <label className='block md:col-span-1 col-span-2'>
-    <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
+      <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
         First Name
       </span>
       <input
@@ -306,9 +329,9 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 
     <label className="block md:col-span-1 col-span-2">
       <span className="after:content-['*'] after:ml-0.5 after:text-red-700 block text-sm pl-4 py-1">
-      Food Preference:
+        Food Preference:
       </span>
-    
+
       <select
         name="veg"
         onChange={handleChange}
@@ -322,7 +345,7 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 
 
     <div className="flex flex-col col-span-1 space-y-2 ml-5 mt-2">
-    <label className="after:content-['*'] after:ml-0.5 after:text-red-700">Are you an IEEE Member?</label>
+      <label className="after:content-['*'] after:ml-0.5 after:text-red-700">Are you an IEEE Member?</label>
       <div className="flex space-x-6">
         <label className="flex items-center space-x-2">
           <input
@@ -431,36 +454,36 @@ const PartOneForm = ({ formData, handleChange, handleSubmit }) => (
 
     <label className="block md:col-span-1 col-span-2">
       <span className="block text-sm pl-4 py-1">
-      Do you requrie Hostel
+        Do you requrie Hostel
       </span>
       <div className="flex space-x-6">
-            <label className="flex items-center space-x-2">
-                <input
-                    type="radio"
-                    name="hostler"
-                    value="true"
-                    checked={formData.hostler}
-                    onChange={handleChange}
-                    className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
-                />
-                <span className="text-white text-sm font-medium">Yes</span>
-            </label>
-            <label className="flex items-center space-x-2">
-                <input
-                    type="radio"
-                    name="hostler"
-                    value="false"
-                    checked={!formData.hostler}
-                    onChange={handleChange}
-                    className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
-                />
-                <span className="text-white text-sm font-medium">No</span>
-            </label>
-        </div>
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="hostler"
+            value="true"
+            checked={formData.hostler}
+            onChange={handleChange}
+            className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+          />
+          <span className="text-white text-sm font-medium">Yes</span>
+        </label>
+        <label className="flex items-center space-x-2">
+          <input
+            type="radio"
+            name="hostler"
+            value="false"
+            checked={!formData.hostler}
+            onChange={handleChange}
+            className="rounded-md h-6 w-6 border-4 appearance-none  border-gray-300 checked:bg-blue-600 checked:border-white focus:outline-none"
+          />
+          <span className="text-white text-sm font-medium">No</span>
+        </label>
+      </div>
     </label>
 
 
-    <button type="submit" 
+    <button type="submit"
       className="btn btn-sm h-9 w-44 col-span-2 rounded-md text-white border border-[#505459] justify-self-center mt-3"
       style={{
         background: `linear-gradient(90deg, rgba(136, 158, 175, 0.8) 0%, rgba(27, 30, 32, 0.744) 98.32%)`,
@@ -475,60 +498,60 @@ const isEmailValid = (email) => {
 };
 const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) => (
   <form onSubmit={handleSubmit} className="flex flex-col   items-center justify-center px-5 md:px-0 ">
-  <div className="flex justify-center items-center ">
-{formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
-  <button
-    disabled
-    className="group/button relative inline-flex items-center m-5 justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
-  >
-    <span className="text-xs m-3">
-      IEEE Members
-      <br />
-      1199
-    </span>
-    <div
-      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
-    >
-      <div className="relative h-full w-10 bg-white/20"></div>
-    </div>
-  </button>
-)}
-{formData.ieeeMember && formData.rasMember && !isEmailValid(formData.email) &&(
-  <button
-    disabled
-    className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
-  >
-    <span className="text-xs m-3">
-      RAS Members
-      <br />
-      999
-    </span>
-    <div
-      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
-    >
-      <div className="relative h-full w-10 bg-white/20"></div>
-    </div>
-  </button>
-)}
-{!formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) &&(
-  <button
-    disabled
-    className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
-  >
-    <span className="text-xs m-3">
-      Non-IEEE Members
-      <br />
-      1399
-    </span>
-    <div
-      className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
-    >
-      <div className="relative h-full w-10 bg-white/20"></div>
-    </div>
-  </button>
+    <div className="flex justify-center items-center ">
+      {formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) && (
+        <button
+          disabled
+          className="group/button relative inline-flex items-center m-5 justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+        >
+          <span className="text-xs m-3">
+            IEEE Members
+            <br />
+            1199
+          </span>
+          <div
+            className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+          >
+            <div className="relative h-full w-10 bg-white/20"></div>
+          </div>
+        </button>
+      )}
+      {formData.ieeeMember && formData.rasMember && !isEmailValid(formData.email) && (
+        <button
+          disabled
+          className="group/button relative inline-flex items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+        >
+          <span className="text-xs m-3">
+            RAS Members
+            <br />
+            999
+          </span>
+          <div
+            className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+          >
+            <div className="relative h-full w-10 bg-white/20"></div>
+          </div>
+        </button>
+      )}
+      {!formData.ieeeMember && !formData.rasMember && !isEmailValid(formData.email) && (
+        <button
+          disabled
+          className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
+        >
+          <span className="text-xs m-3">
+            Non-IEEE Members
+            <br />
+            1399
+          </span>
+          <div
+            className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]"
+          >
+            <div className="relative h-full w-10 bg-white/20"></div>
+          </div>
+        </button>
 
-)}
-{isEmailValid(formData.email) && (
+      )}
+      {isEmailValid(formData.email) && (
         <button
           disabled
           className="group/button relative inline-flex m-5 items-center justify-center overflow-hidden rounded-md bg-gray-800/30 backdrop-blur-lg text-base font-semibold text-white transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-xl hover:shadow-gray-600/50 border border-white/20"
@@ -545,36 +568,46 @@ const PartTwoForm = ({ formData, handleChange, handleSubmit, loading, amount }) 
           </div>
         </button>
       )}
-  </div>
+    </div>
     <Image src={Qr} alt="QR" width={180} height={180} />
     <span className="text-white text-sm">Scan the QR code to make payment</span>
-<span>OR</span>
-<span>UPI ID : Q966258565@ybl</span>
-<div className="flex flex-col items-center justify-center ">
+    <span>OR</span>
+    <span>UPI ID : Q966258565@ybl</span>
+    <div className="flex flex-col items-center justify-center ">
 
-    <input
-      type="text"
-      name="transactionId"
-      placeholder="Transaction ID"
-      onChange={handleChange}
-      value={formData.transactionId}
-      required
-      className="input-field text-white bg-[#57595d] w-fit  px-1 py-1 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
-    />
-    <input
-      type="file"
-      name="paymentScreenshot"
-      accept="image/*"
-      onChange={handleChange}
-      required
-      className="input-field w-fit bg-[#57595d] px-1 py-1 m-5 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
-    />
+      <input
+        type="text"
+        name="transactionId"
+        placeholder="Transaction ID"
+        onChange={handleChange}
+        value={formData.transactionId}
+        required
+        className="input-field text-white bg-[#57595d] w-fit  px-1 py-1 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
+      />
+      <input
+        type="file"
+        name="paymentScreenshot"
+        accept="image/*"
+        onChange={handleChange}
+        required
+        className="input-field w-fit bg-[#57595d] px-1 py-1 m-5 rounded-md focus:outline-none border-2 border-[#E3E3E3]"
+      />
 
-    <button type="submit" className="flex items-center  bg-slate-500 text-white gap-1 px-2  py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
-      {loading ? "Loading..." : "Submit"}
-    </button>
-</div>
+      <button type="submit" className="flex items-center  bg-slate-500 text-white gap-1 px-2  py-2 cursor-pointer text-gray-800 font-semibold tracking-widest rounded-md hover:bg-gray-400 duration-300 hover:gap-2 hover:translate-x-3" disabled={loading}>
+        {loading ? "Loading..." : "Submit"}
+      </button>
+    </div>
   </form>
+);
+// RegistrationClosedSeal Component
+const RegistrationClosed = () => (
+  <div className="flex justify-center items-center mt-8">
+    <div className="bg-red-600 text-white text-center rounded-full p-6 w-40 h-40 shadow-lg transform rotate-12 flex items-center justify-center border-4 border-red-800">
+      <div className="transform -rotate-112 text-lg font-bold">
+        Registration Closed
+      </div>
+    </div>
+  </div>
 );
 
 export default Register;
