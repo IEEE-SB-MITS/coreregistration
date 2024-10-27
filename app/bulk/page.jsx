@@ -62,14 +62,14 @@ const BulkReg = () => {
         teamLead: teamLead,
         teamMembers: teamMembers,
         totalAmount: totalAmount,
-        membershipConfirmed: membershipConfirmed,
+        
         transactionId: teamLead.transactionId,
         screenshotUrl: screenshotUrl, // URL for the payment screenshot
       };
 
       // Save all data as a single document in the 'bulkReg' collection
       await addDoc(collection(db, 'bulkReg'), teamData);
-      window.location.href = "https://forms.google.com/yourformlink";
+      window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfnkMd9l7DcuRVlReTkyNz7hkO2nzamp2AULEa7cvHIlF4NLA/viewform";
 
       setIsSubmitted(true); 
     
@@ -87,7 +87,7 @@ const BulkReg = () => {
           <h2 className="text-2xl font-bold mb-4">Registration Successful!</h2>
           <p className="text-lg">One more Step to complete the process.</p>
           <p className="mt-4 text-6sm">
-            Please also complete <a href="https://forms.google.com/yourformlink" className="underline text-white">this additional Google Form</a>.
+            Please also complete <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnkMd9l7DcuRVlReTkyNz7hkO2nzamp2AULEa7cvHIlF4NLA/viewform" className="underline text-white">this additional Google Form</a>.
           </p>
         </div>
       ) : (
@@ -253,12 +253,15 @@ const BulkReg = () => {
               required
             />
           </div>
+          <div className='w-full flex flex-col  justify-center items-center'>
           <button
             type="submit"
             className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
           >
             Submit
           </button>
+           <span className='m-4'> For any queries contact us at +91 98954 31875</span>
+          </div>
         </form>
       </div>
     </div>
