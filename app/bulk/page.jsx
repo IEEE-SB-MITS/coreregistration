@@ -230,7 +230,7 @@ const BulkReg = () => {
     <span className="text-white text-sm">Scan the QR code to make payment</span>
     <span>OR</span>
     <span>UPI ID : Q966258565@ybl</span>
-          <div className="mt-4 text-lg text-center font-semibold text-red-800">
+          <div className="mt-4 text-lg text-center font-extrabold text-red-800">
             Total Amount to Pay: ₹{totalAmount}
           </div>
           <div className="mb-4">
