@@ -199,7 +199,7 @@ export default function Component() {
             </div>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-between">
+        <CardFooter className="flex justify-between flex-col md:flex-row space-y-2">
           <div className="text-lg font-semibold">Total Amount: ₹{totalAmount}</div>
           <Button onClick={handleContinue} className="bg-white text-black hover:bg-neutral-200">Continue to Payment</Button>
         </CardFooter>
