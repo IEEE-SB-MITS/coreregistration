@@ -1,277 +1,293 @@
-"use client";
-import React, { useState } from 'react';
-import db from "../../utils/config"; // Ensure Firebase is initialized here
-import { collection, addDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Image from "next/image";
-import Qr from '../../public/qr.png';
-const BulkReg = () => {
-  const storage = getStorage(); // Initialize Firebase Storage
-  const [totalAmount, setTotalAmount] = useState(5000);
-  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission status
+'use client'
 
-  const [teamMembers, setTeamMembers] = useState([
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
-  ]);
-  const [membershipConfirmed, setMembershipConfirmed] = useState(false);
+import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { Plus, Minus, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { doc, updateDoc, getDoc, collection, addDoc, writeBatch } from "firebase/firestore"
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import db from "../../utils/config"
+
+export default function Component() {
+  const storage = getStorage()
   const [teamLead, setTeamLead] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     branch: '',
     college: '',
     semester: '',
-    transactionId: '',
-  });
-  const [paymentScreenshot, setPaymentScreenshot] = useState(null); // To hold the screenshot file
-
-  const handleInputChange = (event, index) => {
-    const { name, value } = event.target;
-    const updatedMembers = [...teamMembers];
-    updatedMembers[index][name] = value;
-    setTeamMembers(updatedMembers);
-  };
+  })
+  const [teamMembers, setTeamMembers] = useState([])
+  const [totalAmount, setTotalAmount] = useState(1000)
+  const [showQR, setShowQR] = useState(false)
+  const [registrationComplete, setRegistrationComplete] = useState(false)
+  const [transactionId, setTransactionId] = useState('')
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null)
+  const [paymentScreenshotUrl, setPaymentScreenshotUrl] = useState('')
+  const [showAddMemberDialog, setShowAddMemberDialog] = useState(false)
+  const [newMember, setNewMember] = useState({
+    firstName: '',
+    lastName: '',
+    branch: '',
+    college: '',
+    semester: '',
+  })
 
   const handleTeamLeadChange = (event) => {
-    const { name, value } = event.target;
-    setTeamLead((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = event.target
+    setTeamLead((prev) => ({ ...prev, [name]: value }))
+  }
 
-  const handleScreenshotChange = (event) => {
-    setPaymentScreenshot(event.target.files[0]); // Store the uploaded file
-  };
+  const handleTransactionIdChange = (event) => {
+    setTransactionId(event.target.value)
+  }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      let screenshotUrl = null;
-
-      // Upload screenshot to Firebase Storage if available
-      if (paymentScreenshot) {
-        const screenshotRef = ref(storage, `upiscreenshots/${Date.now()}_${paymentScreenshot.name}`);
-        await uploadBytes(screenshotRef, paymentScreenshot);
-        screenshotUrl = await getDownloadURL(screenshotRef); // Retrieve the screenshot URL
-      }
-
-      // Prepare data to save in Firestore
-      const teamData = {
-        teamLead: teamLead,
-        teamMembers: teamMembers,
-        totalAmount: totalAmount,
-        
-        transactionId: teamLead.transactionId,
-        screenshotUrl: screenshotUrl, // URL for the payment screenshot
-      };
-
-      // Save all data as a single document in the 'bulkReg' collection
-      await addDoc(collection(db, 'bulkReg'), teamData);
-      window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSfnkMd9l7DcuRVlReTkyNz7hkO2nzamp2AULEa7cvHIlF4NLA/viewform";
-
-      setIsSubmitted(true); 
-    
-      // Optionally reset the form or handle post-submit actions
-    } catch (error) {
-      console.error('Error submitting data:', error);
-      alert('Error submitting data. Please try again.');
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const storageRef = ref(storage, `paymentScreenshots/${file.name}`)
+      await uploadBytes(storageRef, file)
+      const url = await getDownloadURL(storageRef)
+      setPaymentScreenshotUrl(url)
     }
-  };
+  }
+
+  const addTeamMember = () => {
+    setTeamMembers([...teamMembers, newMember])
+    setNewMember({
+      firstName: '',
+      lastName: '',
+      branch: '',
+      college: '',
+      semester: '',
+    })
+    setShowAddMemberDialog(false)
+  }
+
+  const removeTeamMember = (index) => {
+    const updatedMembers = teamMembers.filter((_, i) => i !== index)
+    setTeamMembers(updatedMembers)
+  }
+
+  const handleNewMemberChange = (event) => {
+    const { name, value } = event.target
+    setNewMember((prev) => ({ ...prev, [name]: value }))
+  }
+
+  useEffect(() => {
+    const totalMembers = teamMembers.length + 1
+    const freeEntries = Math.floor(totalMembers / 6)
+    const paidEntries = totalMembers - freeEntries
+    setTotalAmount(paidEntries * 1000)
+  }, [teamMembers])
+
+  const handleContinue = () => {
+    setShowQR(true)
+  }
+
+  const handlePaymentComplete = async () => {
+    setShowQR(false)
+
+    const ticketRef = doc(db, "tickets", "currentTicket")
+    const ticketSnap = await getDoc(ticketRef)
+    let currentTicketNumber = ticketSnap.data().ticketNumber
+
+    const teamData = {
+      teamLead: { 
+        ...teamLead, 
+        ticketNumber: currentTicketNumber, 
+        role: "Team Lead", 
+        transactionId, 
+        paymentScreenshot: paymentScreenshotUrl 
+      },
+      teamMembers: teamMembers.map((member) => ({
+        ...member,
+        ticketNumber: ++currentTicketNumber,
+        role: "Team Member",
+      })),
+      totalAmount,
+      timestamp: new Date(),
+    }
+
+    const batch = writeBatch(db)
+    const leaderDocRef = doc(db, "bulkregistrations", `${teamLead.firstName}_${teamLead.lastName}`)
+
+    batch.set(leaderDocRef, teamData)
+    batch.update(ticketRef, { ticketNumber: currentTicketNumber + 1 })
+
+    try {
+      await batch.commit()
+      console.log("Registration data and ticket numbers updated successfully")
+    } catch (error) {
+      console.error("Error completing registration:", error)
+    }
   
+    setRegistrationComplete(true)
+  }
+
   return (
-    <div className="flex items-center justify-centermin-h-screen bg-neutral-900 text-white">
-      {isSubmitted ? (
-        <div className="p-8 rounded-md shadow-md  w-screen h-screen text-center">
-          <h2 className="text-2xl font-bold mb-4">Registration Successful!</h2>
-          <p className="text-lg">One more Step to complete the process.</p>
-          <p className="mt-4 text-6sm">
-            Please also complete <a href="https://docs.google.com/forms/d/e/1FAIpQLSfnkMd9l7DcuRVlReTkyNz7hkO2nzamp2AULEa7cvHIlF4NLA/viewform" className="underline text-white">this additional Google Form</a>.
-          </p>
-        </div>
-      ) : (
-    <div className="bg-neutral-900 quicksand-600 flex items-center text-black justify-center min-h-screen w-screen">
-      <div className="bg-white/10 backdrop-blur text-white p-8 rounded shadow-md w-full md:w-1/2 my-32">
-        <h2 className="text-2xl font-bold mb-6 text-center">Bulk Registration</h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Team Lead Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={teamLead.name}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Email ID:</label>
-            <input
-              type="email"
-              name="email"
-              value={teamLead.email}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Phone Number:</label>
-            <input
-              type="tel"
-              name="phone"
-              value={teamLead.phone}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Branch:</label>
-            <input
-              type="text"
-              name="branch"
-              value={teamLead.branch}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">College:</label>
-            <input
-              type="text"
-              name="college"
-              value={teamLead.college}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Semester:</label>
-            <input
-              type="text"
-              name="semester"
-              value={teamLead.semester}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-         
-
-          {/* Team Member Input Fields */}
-          {teamMembers.map((member, index) => (
-            <div key={index} className="mt-4">
-              <h3 className="text-lg font-semibold mb-2 underline underline-offset-4 text-center">Team Member {index + 1}</h3>
-              <div className="mb-2">
-                <label className="block text-white/50">First Name:</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={member.firstName}
-                  onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-                  required
-                />
+    <div className="container mx-auto p-4 bg-neutral-900 text-white min-w-full min-h-screen flex justify-center items-center">
+      <Card className="w-full max-w-2xl mx-auto bg-neutral-800 text-white border-neutral-700">
+        <CardHeader>
+          <CardTitle>Bulk Registration</CardTitle>
+          <CardDescription className="text-neutral-400">Register your team for the event</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Team Lead</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="leadFirstName">First Name</Label>
+                  <Input className="bg-neutral-700" id="leadFirstName" name="firstName" value={teamLead.firstName} onChange={handleTeamLeadChange} required />
+                </div>
+                <div>
+                  <Label htmlFor="leadLastName">Last Name</Label>
+                  <Input className="bg-neutral-700" id="leadLastName" name="lastName" value={teamLead.lastName} onChange={handleTeamLeadChange} required />
+                </div>
               </div>
-              <div className="mb-2">
-                <label className="block text-white/50">Last Name:</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={member.lastName}
-                  onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-                  required
-                />
+              <div>
+                <Label htmlFor="leadEmail">Email</Label>
+                <Input className="bg-neutral-700" id="leadEmail" name="email" type="email" value={teamLead.email} onChange={handleTeamLeadChange} required />
               </div>
-              <div className="mb-2">
-                <label className="block text-white/50">Branch:</label>
-                <input
-                  type="text"
-                  name="branch"
-                  value={member.branch}
-                  onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-                  required
-                />
+              <div>
+                <Label htmlFor="leadPhone">Phone</Label>
+                <Input className="bg-neutral-700" id="leadPhone" name="phone" type="tel" value={teamLead.phone} onChange={handleTeamLeadChange} required />
               </div>
-              <div className="mb-2">
-                <label className="block text-white/50">College:</label>
-                <input
-                  type="text"
-                  name="college"
-                  value={member.college}
-                  onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-                  required
-                />
+              <div>
+                <Label htmlFor="leadBranch">Branch</Label>
+                <Input className="bg-neutral-700" id="leadBranch" name="branch" value={teamLead.branch} onChange={handleTeamLeadChange} required />
               </div>
-              <div className="mb-2">
-                <label className="block text-white/50">Semester:</label>
-                <input
-                  type="text"
-                  name="semester"
-                  value={member.semester}
-                  onChange={(e) => handleInputChange(e, index)}
-                  className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-                  required
-                />
+              <div>
+                <Label htmlFor="leadCollege">College</Label>
+                <Input className="bg-neutral-700" id="leadCollege" name="college" value={teamLead.college} onChange={handleTeamLeadChange} required />
+              </div>
+              <div>
+                <Label htmlFor="leadSemester">Semester</Label>
+                <Input className="bg-neutral-700" id="leadSemester" name="semester" value={teamLead.semester} onChange={handleTeamLeadChange} required />
               </div>
             </div>
-          ))}
-          <div className='flex flex-col items-center gap-4 w-full'>
-          <h1 className='text-2xl underline underline-offset-4'>Payment</h1>
-          <Image src={Qr} alt="QR" width={180} height={180} className='flex items-center justify-center' />
-    <span className="text-white text-sm">Scan the QR code to make payment</span>
-    <span>OR</span>
-    <span>UPI ID : Q966258565@ybl</span>
-          <div className="mt-4 text-lg text-center font-extrabold text-red-800">
-            Total Amount to Pay: ₹{totalAmount}
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Transaction ID:</label>
-            <input
-              type="text"
-              name="transactionId"
-              value={teamLead.transactionId}
-              onChange={handleTeamLeadChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md text-black"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-white/50 font-semibold mb-2">Payment Screenshot:</label>
-            <input
-              type="file"
-              name="paymentScreenshot"
-              accept="image/*"
-              onChange={handleScreenshotChange}
-              className="block w-full px-3 py-2 border border-gray-300 bg-white/50  rounded-md font-bold text-black/75"
-              required
-            />
-          </div>  
-          </div>
-          
-          <div className='w-full flex flex-col  justify-center items-center'>
-          <button
-            type="submit"
-            className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded mt-4"
-          >
-            Submit
-          </button>
-           <span className='m-4'> For any queries contact us at +91 98954 31875</span>
-          </div>
-        </form>
-      </div>
-    </div>
-  )}
-  </div>
-  );
-};
 
-export default BulkReg;
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold">Team Members</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {teamMembers.map((member, index) => (
+                  <Card key={index} className="bg-neutral-700 border-neutral-600">
+                    <CardHeader className="p-4">
+                      <CardTitle className="text-sm flex justify-between items-center">
+                        <span>{member.firstName} {member.lastName}</span>
+                        <Button variant="ghost" size="icon" onClick={() => removeTeamMember(index)} className="h-6 w-6">
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <p className="text-xs text-neutral-400">{member.branch}, {member.college}, Semester {member.semester}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+                <Button type="button" variant="outline" className="w-full bg-neutral-700 text-white hover:bg-neutral-600" onClick={() => setShowAddMemberDialog(true)}>
+                  <Plus className="h-4 w-4 mr-2" /> Add Team Member
+                </Button>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <div className="text-lg font-semibold">Total Amount: ₹{totalAmount}</div>
+          <Button onClick={handleContinue} className="bg-white text-black hover:bg-neutral-200">Continue to Payment</Button>
+        </CardFooter>
+      </Card>
+
+      <Dialog open={showAddMemberDialog} onOpenChange={setShowAddMemberDialog}>
+        <DialogContent className="bg-neutral-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Add Team Member</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="newMemberFirstName">First Name</Label>
+                <Input className="bg-neutral-700" id="newMemberFirstName" name="firstName" value={newMember.firstName} onChange={handleNewMemberChange} required />
+              </div>
+              <div>
+                <Label htmlFor="newMemberLastName">Last Name</Label>
+                <Input className="bg-neutral-700" id="newMemberLastName" name="lastName" value={newMember.lastName} onChange={handleNewMemberChange} required />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="newMemberBranch">Branch</Label>
+              <Input className="bg-neutral-700" id="newMemberBranch" name="branch" value={newMember.branch} onChange={handleNewMemberChange} required />
+            </div>
+            <div>
+              <Label htmlFor="newMemberCollege">College</Label>
+              <Input className="bg-neutral-700" id="newMemberCollege" name="college" value={newMember.college} onChange={handleNewMemberChange} required />
+            </div>
+            <div>
+              <Label htmlFor="newMemberSemester">Semester</Label>
+              <Input className="bg-neutral-700" id="newMemberSemester" name="semester" value={newMember.semester} onChange={handleNewMemberChange} required />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={addTeamMember} className="bg-white text-black hover:bg-neutral-200">Add Member</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showQR} onOpenChange={setShowQR}>
+        <DialogContent className="bg-neutral-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Scan QR Code to Pay</DialogTitle>
+            <DialogDescription className="text-neutral-400">
+              Please scan the QR code below to complete your payment of ₹{totalAmount}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center mb-4">
+            <Image src="/qr.png" alt="QR Code" width={200} height={200} />
+          </div>
+          <div className="space-y-4">
+            <Label htmlFor="transactionId">Transaction ID</Label>
+            <Input className="bg-neutral-700"
+              id="transactionId"
+              name="transactionId"
+              value={transactionId}
+              onChange={handleTransactionIdChange}
+              required
+            />
+
+            <Label htmlFor="paymentScreenshot">Upload Payment Screenshot</Label>
+            <Input className="bg-neutral-700"
+              id="paymentScreenshot"
+              type="file"
+              onChange={handleFileChange}
+              required
+            />
+          </div>
+          <DialogFooter>
+            <Button onClick={handlePaymentComplete} className="bg-white text-black hover:bg-neutral-200">Payment Complete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={registrationComplete} onOpenChange={setRegistrationComplete}>
+        <DialogContent className="bg-neutral-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Thank You for Registering!</DialogTitle>
+            <DialogDescription className="text-neutral-400">
+              Your registration is complete. We look forward to seeing you at the event.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setRegistrationComplete(false)} className="bg-white text-black hover:bg-neutral-200">Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
