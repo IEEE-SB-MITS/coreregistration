@@ -82,7 +82,7 @@ export default function BulkTickets() {
           </div>
           <div className="flex items-center space-x-2">
             <Calendar className="h-4 w-4 text-red-400" />
-            <span>{member.semester}</span>
+            <span>Semester {member.semester}</span>
           </div>
         </div>
       </CardContent>
