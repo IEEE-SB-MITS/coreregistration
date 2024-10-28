@@ -34,6 +34,7 @@ export default function Component() {
   const [paymentScreenshot, setPaymentScreenshot] = useState(null)
   const [paymentScreenshotUrl, setPaymentScreenshotUrl] = useState('')
   const [showAddMemberDialog, setShowAddMemberDialog] = useState(false)
+  const [totalMembers, setTotalMembers] = useState(1)
   const [newMember, setNewMember] = useState({
     firstName: '',
     lastName: '',
@@ -87,9 +88,10 @@ export default function Component() {
 
   useEffect(() => {
     const totalMembers = teamMembers.length + 1
-    const freeEntries = Math.floor(totalMembers / 6)
+    const freeEntries = Math.floor(totalMembers / 5)
     const paidEntries = totalMembers - freeEntries
-    setTotalAmount(paidEntries * 1000)
+    setTotalAmount(paidEntries * 1250)
+    setTotalMembers(totalMembers)
   }, [teamMembers])
 
   const handleContinue = () => {
@@ -161,7 +163,7 @@ export default function Component() {
       <Card className="w-full max-w-2xl mx-auto bg-neutral-800 text-white border-neutral-700">
         <CardHeader>
           <CardTitle className="text-neutral-200">Bulk Registration</CardTitle>
-          <CardDescription className="text-neutral-400">Register your team for the event</CardDescription>
+          <CardDescription className="text-neutral-400">Register your team for the event (min 5)</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-4">
@@ -226,10 +228,10 @@ export default function Component() {
         </CardContent>
         <CardFooter className="flex justify-between flex-col md:flex-row space-y-2">
           <div className="text-lg font-semibold">Total Amount: <span className="text-neutral-200">₹{totalAmount}</span></div>
-          <Button onClick={handleContinue} className="bg-neutral-600 text-white hover:bg-red-700" disabled={isLoading}>
+          {totalMembers>=5&&<Button onClick={handleContinue} className="bg-neutral-600 text-white hover:bg-red-700" disabled={isLoading}>
             {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
             Continue to Payment
-          </Button>
+          </Button>}
         </CardFooter>
         {warningMessage && (
           <div className="p-4 bg-yellow-200 text-yellow-800 rounded-b-lg">
