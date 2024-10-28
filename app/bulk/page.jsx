@@ -1,19 +1,23 @@
-'use client'
+"use client";
+import React, { useState } from 'react';
+import db from "../../utils/config"; // Ensure Firebase is initialized here
+import { collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import Image from "next/image";
+import Qr from '../../public/qr.png';
+const BulkReg = () => {
+  const storage = getStorage(); // Initialize Firebase Storage
+  const [totalAmount, setTotalAmount] = useState(5000);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission status
 
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { Plus, Minus, User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { doc, updateDoc, getDoc, collection, addDoc, writeBatch } from "firebase/firestore"
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import db from "../../utils/config"
-
-export default function Component() {
-  const storage = getStorage()
+  const [teamMembers, setTeamMembers] = useState([
+    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+    { firstName: '', lastName: '', branch: '', college: '', semester: '' },
+  ]);
+  const [membershipConfirmed, setMembershipConfirmed] = useState(false);
   const [teamLead, setTeamLead] = useState({
     firstName: '',
     lastName: '',
