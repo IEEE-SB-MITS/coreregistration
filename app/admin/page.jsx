@@ -277,7 +277,7 @@ export default function AdminPanel() {
                             : "bg-red-500 text-white"
                         }
                       >
-                        {participant.status.toUpperCase()}
+                        {participant.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -387,7 +387,7 @@ export default function AdminPanel() {
                             : "bg-red-500 text-white"
                         }
                       >
-                        {participant.status.toUpperCase()}
+                        {participant.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -497,7 +497,7 @@ export default function AdminPanel() {
                             : "bg-red-500 text-white"
                         }
                       >
-                        {participant.status.toUpperCase()}
+                        {participant.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -608,7 +608,7 @@ export default function AdminPanel() {
                             : "bg-red-500 text-white"
                         }
                       >
-                        {registration.status.toUpperCase()}
+                        {registration.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
