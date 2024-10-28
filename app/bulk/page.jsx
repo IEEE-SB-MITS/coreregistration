@@ -136,6 +136,7 @@ export default function Component() {
         })),
         totalAmount,
         timestamp: new Date(),
+        status: 'pending',
       }
 
       const batch = writeBatch(db)

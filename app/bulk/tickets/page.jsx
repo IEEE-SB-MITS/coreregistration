@@ -44,7 +44,7 @@ export default function BulkTickets() {
     }
   };
 
-  const TicketCard = ({ member, isLead = false }) => (
+  const TicketCard = ({ member, isLead = false, status }) => (
     <Card className="w-full max-w-sm mx-auto mb-4 bg-neutral-800 text-white border-neutral-700 hover:border-red-800 transition-all duration-300 transform hover:-translate-y-1">
       <CardHeader className="bg-gradient-to-r from-neutral-700 to-neutral-800 border-b border-red-900">
         <CardTitle className="flex items-center justify-between">
@@ -52,6 +52,7 @@ export default function BulkTickets() {
           <Ticket className="h-6 w-6 text-red-400" />
         </CardTitle>
         <CardDescription className="text-neutral-400">Ticket #{member.ticketNumber}</CardDescription>
+        <CardDescription className="text-neutral-400">{status}</CardDescription>
       </CardHeader>
       <CardContent className="pt-4">
         <div className="space-y-2">
@@ -92,6 +93,7 @@ export default function BulkTickets() {
     <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center">
       <div className="w-full max-w-4xl px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-center">Bulk Registration Tickets</h1>
+        {}
         {!teamData ? (
           <Card className="bg-neutral-800 border-neutral-700 p-6 mb-8">
             <form onSubmit={fetchTeamData} className="space-y-4">
@@ -142,7 +144,7 @@ export default function BulkTickets() {
         ) : (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <TicketCard member={teamData.teamLead} isLead={true} />
+              <TicketCard member={teamData.teamLead} isLead={true} status={teamData.status} />
               {teamData.teamMembers.map((member, index) => (
                 <TicketCard key={index} member={member} />
               ))}

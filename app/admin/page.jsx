@@ -35,6 +35,7 @@ import {
 
 export default function AdminPanel() {
   const [participants, setParticipants] = useState([]);
+  const [bulkRegistrations, setBulkRegistrations] = useState([])
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -56,31 +57,40 @@ export default function AdminPanel() {
   }, [auth]);
 
   useEffect(() => {
-    const fetchParticipants = async () => {
-      setLoading(true);
-      const querySnapshot = await getDocs(collection(db, "CORE"));
-      const data = querySnapshot.docs.map((doc) => {
-        const participantData = doc.data();
-        return {
-          ...participantData,
-          id: doc.id,
-          transactionId: participantData.transactionId.toString(), // Ensure transactionId is a string
-          ticketNumber: participantData.ticketNumber.toString(), // Ensure ticketNumber is a string
-        };
-      });
+    const fetchData = async () => {
+      setLoading(true)
+      const participantsSnapshot = await getDocs(collection(db, 'CORE'))
+      const participantsData = participantsSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+        transactionId: doc.data().transactionId.toString(),
+        ticketNumber: doc.data().ticketNumber.toString(),
+      }))
 
-      // Sort participants by ticket number in ascending order
-      data.sort((a, b) => a.ticketNumber.localeCompare(b.ticketNumber));
+      const bulkRegistrationsSnapshot = await getDocs(collection(db, 'bulkregistrations'))
+      const bulkRegistrationsData = bulkRegistrationsSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }))
 
-      setParticipants(data);
-      setLoading(false);
-    };
+      setParticipants(participantsData.sort((a, b) => a.ticketNumber.localeCompare(b.ticketNumber)))
+      setBulkRegistrations(bulkRegistrationsData)
+      setLoading(false)
+    }
 
-    fetchParticipants();
-  }, [db]);
+    fetchData()
+  }, [db])
 
   const handleStatusChange = async (id, newStatus) => {
     const participantRef = doc(db, "CORE", id);
+    await updateDoc(participantRef, { status: newStatus });
+    setParticipants((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
+    );
+  };
+
+  const handleStatusBChange = async (id, newStatus) => {
+    const participantRef = doc(db, "bulkregistrations", id);
     await updateDoc(participantRef, { status: newStatus });
     setParticipants((prev) =>
       prev.map((p) => (p.id === id ? { ...p, status: newStatus } : p))
@@ -91,6 +101,20 @@ export default function AdminPanel() {
     setDeleting(true);
     if (participantToDelete) {
       const participantRef = doc(db, "CORE", participantToDelete.id);
+      await deleteDoc(participantRef);
+      setParticipants((prev) =>
+        prev.filter((p) => p.id !== participantToDelete.id)
+      );
+      setDeleteDialogOpen(false);
+      setParticipantToDelete(null);
+    }
+    setDeleting(false);
+  };
+
+  const handleBDelete = async () => {
+    setDeleting(true);
+    if (participantToDelete) {
+      const participantRef = doc(db, "bulkregistrations", participantToDelete.id);
       await deleteDoc(participantRef);
       setParticipants((prev) =>
         prev.filter((p) => p.id !== participantToDelete.id)
@@ -513,8 +537,121 @@ export default function AdminPanel() {
               </TableBody>
             </Table>
           </div>
+
+          <h2 className="text-xl font-semibold mt-8 mb-4">
+            Bulk Registrations
+            <span className="text-sm text-black/60"> (RELOAD TO SEE CHANGES)</span>
+          </h2>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>S.No</TableHead>
+                  <TableHead>Team Lead</TableHead>
+                  <TableHead>Team Members</TableHead>
+                  <TableHead>Phone Number</TableHead>
+                  <TableHead>Total Amount</TableHead>
+                  <TableHead>Transaction ID</TableHead>
+                  <TableHead>Payment Screenshot</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {bulkRegistrations.map((registration, index) => (
+                  <TableRow key={registration.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell className="font-medium">
+                      {registration.teamLead.firstName} {registration.teamLead.lastName}
+                    </TableCell>
+                    <TableCell>{registration.teamMembers.length+1}</TableCell>
+                    <TableCell>{registration.teamLead.phone}</TableCell>
+                    <TableCell>{registration.totalAmount}</TableCell>
+                    <TableCell>{registration.teamLead.transactionId}</TableCell>
+                    <TableCell>
+                      {registration.teamLead.paymentScreenshot && (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" className="p-0">
+                              <img
+                                src={registration.teamLead.paymentScreenshot}
+                                alt="Payment Screenshot"
+                                className="h-16 w-16 object-cover rounded cursor-pointer"
+                              />
+                              <Maximize2 className="h-4 w-4 absolute bottom-1 right-1 text-white bg-black bg-opacity-50 rounded-full p-1" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="w-96 max-w-full mx-auto my-8">
+                            <img
+                              src={registration.teamLead.paymentScreenshot}
+                              alt="Payment Screenshot"
+                              className="w-full h-auto"
+                            />
+                          </DialogContent>
+                        </Dialog>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          registration.status === "pending"
+                            ? "warning"
+                            : registration.status === "confirmed"
+                            ? "success"
+                            : "destructive"
+                        }
+                        className={
+                          registration.status === "pending"
+                            ? "bg-yellow-500 text-black"
+                            : registration.status === "confirmed"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
+                        }
+                      >
+                        {registration.status.toUpperCase()}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleStatusBChange(registration.id, "confirmed")
+                          }
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            handleStatusBChange(registration.id, "pending")
+                          }
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setParticipantToDelete(registration);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
+
+      
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
@@ -525,7 +662,7 @@ export default function AdminPanel() {
           </p>
           <div className="flex space-x-4 mt-4">
             <Button
-              onClick={handleDelete}
+              onClick={handleBDelete}
               variant="destructive"
               disabled={deleting}
             >
