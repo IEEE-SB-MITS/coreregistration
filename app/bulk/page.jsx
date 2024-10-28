@@ -305,7 +305,7 @@ export default function Component() {
             />
           </div>
           <DialogFooter>
-            <Button onClick={handlePaymentComplete} className="bg-neutral-600 text-white hover:bg-red-700">Payment Complete</Button>
+            <Button onClick={handlePaymentComplete} className="bg-neutral-600 text-white hover:bg-red-700"> Complete Payment</Button>
           </DialogFooter>
           
         </DialogContent>
