@@ -6,11 +6,15 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import db from '../../utils/config';
 
 const Login = () => {
+
   const [ticketNumber, setTicketNumber] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-
+  
+  const handleRedirect = () => {
+      router.push('/bulk/tickets');
+  };
   const fetchTicketDetails = async () => {
     if (!ticketNumber || !email) {
       setError("Please enter a valid ticket number and email.");
@@ -66,6 +70,10 @@ const Login = () => {
       >
         DOWNLOAD TICKET
       </button>
+
+      <span className='' onClick={handleRedirect} style={{ cursor: 'pointer' }}>
+            Switch to bulk tickets?
+        </span>
       
       {error && <div className="text-red-500 mt-3">{error}</div>}
     </div>
