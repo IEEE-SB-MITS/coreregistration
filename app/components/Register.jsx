@@ -122,7 +122,7 @@ const Register = () => {
       const currentTicket = ticketDoc.data().ticketNumber;
       const nextTicket = currentTicket + 1;
 
-      if (nextTicket > 100255) {
+      if (nextTicket > 100300) {
         setLoading(false);
         setIsRegistrationClosed(true); // Display "Registration Closed" message
         return;
