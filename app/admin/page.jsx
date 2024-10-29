@@ -153,6 +153,47 @@ export default function AdminPanel() {
     XLSX.writeFile(workbook, "participants.xlsx");
   };
 
+  const handleBulkExport = () => {
+    // Structure the data for export
+    const exportData = bulkRegistrations.flatMap((registration) => [
+      {
+        ticketNumber: registration.teamLead.ticketNumber || '',
+        firstName: registration.teamLead.firstName,
+        lastName: registration.teamLead.lastName,
+        email: registration.teamLead.email,
+        phone: registration.teamLead.phone,
+        branch: registration.teamLead.branch,
+        college: registration.teamLead.college,
+        semester: registration.teamLead.semester,
+        role: "Team Lead",
+        transactionId: registration.teamLead.transactionId.toString().padStart(12, "0"),
+        paymentUrl: registration.teamLead.paymentScreenshot,
+      },
+      ...registration.teamMembers.map((member) => ({
+        ticketNumber: member.ticketNumber || '',
+        firstName: member.firstName,
+        lastName: member.lastName,
+        email: member.email || '',
+        phone: member.phone || '',
+        branch: member.branch,
+        college: member.college,
+        semester: member.semester,
+        role: "Team Member",
+        transactionId: '',
+        paymentUrl: '',
+      }))
+    ]);
+  
+    // Convert data to worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Bulk Registration");
+  
+    // Export workbook as Excel file
+    XLSX.writeFile(workbook, "bulk_registration.xlsx");
+  };
+
+
   const earlyBird = participants.filter(
     (p) => p.ticketNumber.startsWith("10") && !p.ticketNumber.startsWith("1002")
   );
@@ -200,6 +241,10 @@ export default function AdminPanel() {
             <Button onClick={handleExport} variant="outline">
               <FileSpreadsheet className="mr-2 h-4 w-4" />
               Export to Excel
+            </Button>
+            <Button onClick={handleBulkExport} variant="outline">
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Export Bulk
             </Button>
             <Button onClick={handleLogout} variant="destructive">
               <LogOut className="mr-2 h-4 w-4" />
